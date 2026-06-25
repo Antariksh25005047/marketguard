@@ -27,6 +27,7 @@ import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import Dashboard from "./pages/Dashboard";
+import StockAnalysis from "./pages/StockAnalysis";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage/>} />
         <Route path="/dashboard" element={<Dashboard/>}/>
+        <Route path="/stock-analysis" element={<StockAnalysis />} />
       </Routes>
     </BrowserRouter>
   );
