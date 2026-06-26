@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime, UTC
 import os
@@ -42,3 +42,51 @@ def init_db():
 
 if __name__ == "__main__":
     init_db()
+
+from sqlalchemy import Column, Integer, Float, String, DateTime, Text, JSON, Boolean
+
+class Stock(Base):
+    __tablename__ = "stocks"
+    id = Column(Integer, primary_key=True)
+    symbol = Column(String(20), unique=True, nullable=False)
+    name = Column(String(20))
+    is_active = Column(Boolean, default= True)
+    created_at= Column(DateTime, default = datetime.utcnow)
+
+
+class StockPrice(Base):
+    __tablename__ = "stock_price"
+    id = Column(Integer, primary_key=True)
+    symbol= Column(String(20), nullable=False)
+    open = Column(Float)
+    high = Column(Float)
+    low= Column(Float)
+    close = Column(Float)
+    volume = Column(Float)
+    timestamp= Column(DateTime, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class NewsArticle(Base):
+    __tablename__ = "news_articles"
+    id= Column(Integer, primary_key=True)
+    symbol= Column(String(20))
+    title = Column(String(500))
+    url = Column(String(500), unique=True)
+    source = Column(String(100))
+    pump_score = Column(Float, default= 0)
+    published_at = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class Alert(Base):
+    __tablename__ = "alerts"
+    id  = Column(Integer, primary_key=True)
+    symbol = Column(String)
+    risk_score = Column(Float)
+    risk_level = Column(String(20))
+    pattern = Column(Text)
+    description = Column(Text, nullable=False)
+    is_resolved = Column(Boolean, default = False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
