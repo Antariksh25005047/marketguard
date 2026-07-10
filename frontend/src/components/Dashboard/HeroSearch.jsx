@@ -1,7 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const TRENDING_STOCKS = ['AAPL', 'NVDA', 'TSLA', 'MSFT', 'TCS', 'RELIANCE']
+// const TRENDING_STOCKS = ['AAPL', 'NVDA', 'TSLA', 'MSFT', 'TCS', 'RELIANCE']
+
+const TRENDING_STOCKS = [
+  "AAPL",
+  "NVDA",
+  "TSLA",
+  "MSFT",
+  "TCS.NS",
+  "RELIANCE.NS",
+];
 
 function SearchIcon() {
   return (
@@ -41,34 +50,56 @@ function SparkIcon() {
     </svg>
   )
 }
-const stockMap = {
-  RELIANCE: "RELIANCE.NS",
-  TCS: "TCS.NS",
-  HDFCBANK: "HDFCBANK.NS",
-  SUZLON: "SUZLON.NS",
-  IRFC: "IRFC.NS",
-  YESBANK: "YESBANK.NS",
-  ADANIENT: "ADANIENT.NS",
-  ETERNAL: "ETERNAL.NS",
-};
+// const stockMap = {
+//   RELIANCE: "RELIANCE.NS",
+//   TCS: "TCS.NS",
+//   HDFCBANK: "HDFCBANK.NS",
+//   SUZLON: "SUZLON.NS",
+//   IRFC: "IRFC.NS",
+//   YESBANK: "YESBANK.NS",
+//   ADANIENT: "ADANIENT.NS",
+//   ETERNAL: "ETERNAL.NS",
+// };
 
 export default function HeroSearch() {
   const [query, setQuery] = useState('')
   const [focused, setFocused] = useState(false)
   const navigate = useNavigate();
+  const [results, setResults] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  const handleAnalyze = (e) => {
+  useEffect(() => {
+  if (query.length < 2) {
+    setResults([]);
+    return;
+  }
+
+  const timer = setTimeout(async () => {
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:8000/api/search?q=${query}`
+      );
+
+      const data = await res.json();
+
+      setResults(data.results || []);
+      setShowDropdown(true);
+
+    } catch (err) {
+      console.error(err);
+    }
+  }, 300);
+
+  return () => clearTimeout(timer);
+
+}, [query]);
+
+const handleAnalyze = (e) => {
   e.preventDefault();
 
-  if (!query.trim()) return;
+  if (results.length === 0) return;
 
-  const input = query.toUpperCase();
-  const symbol = stockMap[input] || input;
-  
-  console.log("Input:", input);
-  console.log("Mapped:", symbol);
-
-  navigate(`/stock-analysis/${symbol}`);
+  navigate(`/stock-analysis/${results[0].symbol}`);
 };
 
   return (
@@ -113,11 +144,61 @@ export default function HeroSearch() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                onFocus={() => setFocused(true)}
-                onBlur={() => setFocused(false)}
+                // onFocus={() => setFocused(true)}
+                onFocus={() => {
+                  setFocused(true);
+                  setShowDropdown(true);
+              }}
+                // onBlur={() => setFocused(false)}
+                onBlur={() => {
+                  setFocused(false);
+
+                  setTimeout(() => {
+                      setShowDropdown(false);
+                  }, 200);
+              }}
                 placeholder="Search AAPL, TSLA, NVDA, TCS, RELIANCE..."
                 className="w-full rounded-2xl bg-transparent py-4 pl-12 pr-4 font-body text-base text-white placeholder:text-white/35 focus:outline-none"
               />
+
+              {showDropdown && results.length > 0 && (
+                
+                <div className="absolute left-0 right-0 top-full mt-2 rounded-xl border border-white/10 bg-[#121212] z-50 max-h-72 overflow-y-auto">
+
+
+                  {results.map((stock) => (
+
+                    <button
+
+                    key={stock.symbol}
+                    type="button"
+
+                  //   onClick={() => {
+                  //   setQuery(stock.name);
+                  //   setShowDropdown(false);
+                  //   navigate(`/stock-analysis/${stock.symbol}`);
+                  // }}
+
+                  onClick={() => {
+                    setQuery(stock.symbol);
+                    setShowDropdown(false);
+                    navigate(`/stock-analysis/${stock.symbol}`);
+                }}
+                  className="w-full text-left px-4 py-3 hover:bg-white/5"
+                  >
+
+                    <p className="text-white">{stock.name}</p>
+                    <p className="text-white/50 text-sm">{stock.symbol}</p>
+
+                    </button>
+
+                    ))}
+
+
+
+                    </div>
+
+                    )}
             </div>
 
             <button
@@ -135,11 +216,16 @@ export default function HeroSearch() {
         <button
           key={symbol}
           type="button"
-          onClick={() => {
-            const mapped = stockMap[symbol] || symbol;
+          // onClick={() => {
+          //   const mapped = stockMap[symbol] || symbol;
 
-            setQuery(mapped);
-            navigate(`/stock-analysis/${mapped}`);
+          //   setQuery(symbol);
+          //   navigate(`/stock-analysis/${symbol}`);
+          // }}
+
+          onClick={() => {
+          setQuery(symbol);
+          navigate(`/stock-analysis/${symbol}`);
           }}
         >
               {symbol}

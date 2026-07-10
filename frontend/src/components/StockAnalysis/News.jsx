@@ -23,73 +23,77 @@ import { Search, ArrowRight, Zap, Trophy, TrendingUp, TrendingDown, X, ChevronRi
  
 // const RECENT = ["NVIDIA", "Apple", "Microsoft"];
  
-const COMPARISON_DATA = {
-  NVDA: {
-    summary: [
-      "NVIDIA leads with dominant AI chip demand, delivering exceptional earnings growth of 122% YoY and expanding operating margins above 50%.",
-      "Tesla, while undervalued by traditional multiples, faces near-term pressure from EV margin compression and increased competition in its core market.",
-      "Overall, NVIDIA holds stronger growth momentum and institutional conviction. Tesla offers a contrarian value opportunity for patient, long-term investors.",
-    ],
-    winner: "NVDA",
-    winnerConf: 91,
-    reasons: ["Dominant AI infrastructure revenue", "Superior earnings growth trajectory", "Stronger institutional momentum"],
-    bars: [
-      { label: "Fundamentals",       a: 82, b: 94 },
-      { label: "Technical Strength", a: 90, b: 84 },
-      { label: "Valuation",          a: 92, b: 68 },
-      { label: "Growth",             a: 74, b: 98 },
-    ],
-  },
-  AAPL: {
-    summary: [
-      "Apple's unmatched brand equity and services flywheel generate $100B+ in annual free cash flow, making it one of the most capital-efficient businesses globally.",
-      "Tesla carries higher execution risk but offers significantly more upside in a bull scenario, particularly if Full Self-Driving reaches commercial scale.",
-      "Apple is the lower-risk, steady compounder. Tesla is the higher-conviction growth bet. The right choice depends on your time horizon and risk appetite.",
-    ],
-    winner: "AAPL",
-    winnerConf: 82,
-    reasons: ["Unmatched free cash flow generation", "Consistent capital returns to shareholders", "Lower execution and market risk"],
-    bars: [
-      { label: "Fundamentals",       a: 82, b: 91 },
-      { label: "Technical Strength", a: 90, b: 85 },
-      { label: "Valuation",          a: 92, b: 78 },
-      { label: "Growth",             a: 74, b: 62 },
-    ],
-  },
-  MSFT: {
-    summary: [
-      "Microsoft's Azure cloud platform and deep OpenAI integration position it at the center of enterprise AI adoption, driving durable double-digit revenue growth.",
-      "Tesla offers a higher-risk, higher-reward profile with significant optionality in robotics and autonomous driving beyond its core EV business.",
-      "Microsoft is the cleaner compounder with more predictable cash flows. Tesla suits investors who want leveraged exposure to multiple disruptive technologies.",
-    ],
-    winner: "MSFT",
-    winnerConf: 88,
-    reasons: ["Azure cloud + AI integration", "Highly predictable enterprise revenue", "Exceptional capital allocation track record"],
-    bars: [
-      { label: "Fundamentals",       a: 82, b: 93 },
-      { label: "Technical Strength", a: 90, b: 87 },
-      { label: "Valuation",          a: 92, b: 72 },
-      { label: "Growth",             a: 74, b: 86 },
-    ],
-  },
-};
+// const COMPARISON_DATA = {
+//   NVDA: {
+//     summary: [
+//       "NVIDIA leads with dominant AI chip demand, delivering exceptional earnings growth of 122% YoY and expanding operating margins above 50%.",
+//       "Tesla, while undervalued by traditional multiples, faces near-term pressure from EV margin compression and increased competition in its core market.",
+//       "Overall, NVIDIA holds stronger growth momentum and institutional conviction. Tesla offers a contrarian value opportunity for patient, long-term investors.",
+//     ],
+//     winner: "NVDA",
+//     winnerConf: 91,
+//     reasons: ["Dominant AI infrastructure revenue", "Superior earnings growth trajectory", "Stronger institutional momentum"],
+//     bars: [
+//       { label: "Fundamentals",       a: 82, b: 94 },
+//       { label: "Technical Strength", a: 90, b: 84 },
+//       { label: "Valuation",          a: 92, b: 68 },
+//       { label: "Growth",             a: 74, b: 98 },
+//     ],
+//   },
+//   AAPL: {
+//     summary: [
+//       "Apple's unmatched brand equity and services flywheel generate $100B+ in annual free cash flow, making it one of the most capital-efficient businesses globally.",
+//       "Tesla carries higher execution risk but offers significantly more upside in a bull scenario, particularly if Full Self-Driving reaches commercial scale.",
+//       "Apple is the lower-risk, steady compounder. Tesla is the higher-conviction growth bet. The right choice depends on your time horizon and risk appetite.",
+//     ],
+//     winner: "AAPL",
+//     winnerConf: 82,
+//     reasons: ["Unmatched free cash flow generation", "Consistent capital returns to shareholders", "Lower execution and market risk"],
+//     bars: [
+//       { label: "Fundamentals",       a: 82, b: 91 },
+//       { label: "Technical Strength", a: 90, b: 85 },
+//       { label: "Valuation",          a: 92, b: 78 },
+//       { label: "Growth",             a: 74, b: 62 },
+//     ],
+//   },
+//   MSFT: {
+//     summary: [
+//       "Microsoft's Azure cloud platform and deep OpenAI integration position it at the center of enterprise AI adoption, driving durable double-digit revenue growth.",
+//       "Tesla offers a higher-risk, higher-reward profile with significant optionality in robotics and autonomous driving beyond its core EV business.",
+//       "Microsoft is the cleaner compounder with more predictable cash flows. Tesla suits investors who want leveraged exposure to multiple disruptive technologies.",
+//     ],
+//     winner: "MSFT",
+//     winnerConf: 88,
+//     reasons: ["Azure cloud + AI integration", "Highly predictable enterprise revenue", "Exceptional capital allocation track record"],
+//     bars: [
+//       { label: "Fundamentals",       a: 82, b: 93 },
+//       { label: "Technical Strength", a: 90, b: 87 },
+//       { label: "Valuation",          a: 92, b: 72 },
+//       { label: "Growth",             a: 74, b: 86 },
+//     ],
+//   },
+// };
  
-const getComparison = (ticker) => COMPARISON_DATA[ticker] || {
-  summary: [
-    `${STOCK_DB[ticker]?.name || ticker} shows solid financial metrics with consistent revenue growth and a healthy balance sheet relative to its sector peers.`,
-    "Tesla continues to trade at a premium multiple, reflecting investor confidence in its long-term energy and autonomy roadmap despite near-term margin headwinds.",
-    "Both companies offer distinct risk-reward profiles. Your preference should align with your investment timeline and conviction in each company's core thesis.",
-  ],
-  winner: ticker,
-  winnerConf: 79,
-  reasons: ["Stronger near-term earnings visibility", "Favorable risk-adjusted return profile", "Better relative sector positioning"],
-  bars: [
-    { label: "Fundamentals",       a: 82, b: 80 },
-    { label: "Technical Strength", a: 90, b: 78 },
-    { label: "Valuation",          a: 92, b: 75 },
-    { label: "Growth",             a: 74, b: 82 },
-  ],
-};
+// const getComparison = (ticker, currentStock, compared) => ({
+//   summary: [
+//     `${currentStock.companyName} and ${compared?.name || ticker} are both fundamentally strong companies.`,
+//     `${ticker} currently shows better short-term momentum while ${currentStock.companyName} remains attractive for long-term investors.`,
+//     "Invest according to your own research, risk tolerance, and investment horizon.",
+//   ],
+//   winner: ticker,
+//   winnerConf: 79,
+//   reasons: [
+//     "Better recent momentum",
+//     "Healthy financial performance",
+//     "Positive market sentiment",
+//   ],
+//   bars: [
+//     { label: "Fundamentals", a: 82, b: 80 },
+//     { label: "Technical Strength", a: 90, b: 78 },
+//     { label: "Valuation", a: 92, b: 75 },
+//     { label: "Growth", a: 74, b: 82 },
+//   ],
+// });
  
 // ─── Helpers ───────────────────────────────────────────────────────────────────
  
@@ -119,7 +123,17 @@ function CompareBar({ label, aVal, bVal, aColor, bColor, delay }) {
       </div>
       {/* A bar */}
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ fontSize: 10.5, color: aColor, fontWeight: 700, width: 34, flexShrink: 0 }}>TSLA</span>
+        <span
+  style={{
+    fontSize: 10,
+    color: aColor,
+    fontWeight: 700,
+    width: 32,
+    flexShrink: 0,
+  }}
+>
+  {currentStock.symbol}
+</span>
         <div style={{ flex: 1, height: 5, borderRadius: 99, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
           <div style={{
             height: "100%", width: `${wa}%`, borderRadius: 99,
@@ -149,7 +163,16 @@ function CompareBar({ label, aVal, bVal, aColor, bColor, delay }) {
   );
 }
  
-function CompareBarWithTicker({ label, aVal, bVal, aColor, bColor, bTicker, delay }) {
+function CompareBarWithTicker({
+  label,
+  aVal,
+  bVal,
+  aColor,
+  bColor,
+  aTicker,
+  bTicker,
+  delay,
+}) {
   const [wa, setWa] = useState(0);
   const [wb, setWb] = useState(0);
  
@@ -164,7 +187,17 @@ function CompareBarWithTicker({ label, aVal, bVal, aColor, bColor, bTicker, dela
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
       <span style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.35)", letterSpacing: "0.04em", textTransform: "uppercase" }}>{label}</span>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ fontSize: 10, color: aColor, fontWeight: 700, width: 32, flexShrink: 0 }}>TSLA</span>
+        <span
+  style={{
+    fontSize: 10,
+    color: aColor,
+    fontWeight: 700,
+    width: 32,
+    flexShrink: 0,
+  }}
+>
+  {aTicker}
+</span>
         <div style={{ flex: 1, height: 4, borderRadius: 99, background: "rgba(255,255,255,0.055)", overflow: "hidden" }}>
           <div style={{ height: "100%", width: `${wa}%`, borderRadius: 99, background: `linear-gradient(90deg, ${aColor}70, ${aColor})`, transition: "width 0.95s cubic-bezier(0.25,1,0.5,1)", boxShadow: aWins ? `0 0 6px ${aColor}50` : "none" }} />
         </div>
@@ -248,8 +281,8 @@ function StockCard({ stock, align = "left", animate }) {
  
 // ─── Main Component ────────────────────────────────────────────────────────────
  
-export default function AIStockComparison() {
-  const [baseStock, setBaseStock] = useState(null);
+export default function AIStockComparison({ currentStock }) {
+  // const [baseStock, setBaseStock] = useState(null);
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -322,21 +355,71 @@ export default function AIStockComparison() {
     setShowResult(false);
     inputRef.current?.focus();
   };
- 
+
+  // const runCompare = async () => {
+  //   console.log("Compare button clicked");
+  //   if (!selected) return;
+  //   setComparing(true);
+  //   setShowResult(false);
+  //   await new Promise(r => setTimeout(r, 1100));
+  //   setCompared(selected);
+  //   setCompData(getComparison(selected.ticker));
+  //   setComparing(false);
+  //   setShowResult(true);
+  // };
+
   const runCompare = async () => {
+  try {
+    console.log("1. Start");
+
     if (!selected) return;
+
     setComparing(true);
     setShowResult(false);
-    await new Promise(r => setTimeout(r, 1100));
+
+    await new Promise((r) => setTimeout(r, 1100));
+
+    console.log("2. Setting compared");
     setCompared(selected);
-    setCompData(getComparison(selected.ticker));
+
+    console.log("3. Getting comparison");
+
+    const res = await fetch(
+  `http://127.0.0.1:8000/api/stocks/compare?stock1=${currentStock.symbol}&stock2=${selected.ticker}`
+);
+
+if (!res.ok) {
+  throw new Error("Compare API failed");
+}
+
+const data = await res.json();
+
+setCompData(data);
+    console.log(data);
+
+    // setCompData(data);
+
+    console.log("4. Finished");
+
     setComparing(false);
     setShowResult(true);
-  };
+
+  } catch (err) {
+    console.error("COMPARE ERROR:", err);
+    setComparing(false);
+  }
+};
  
   // const winnerStock = compData && compared
   //   ? (compData.winner === "TSLA" ? BASE_STOCK : compared)
   //   : null;
+
+  const winnerStock =
+  compData && compared
+    ? compData.winner === currentStock.symbol
+      ? currentStock
+      : compared
+    : null;
  
   return (
     <>
@@ -422,10 +505,10 @@ export default function AIStockComparison() {
                   borderRadius: 12, flexShrink: 0,
                   minWidth: 130,
                 }}>
-                  <div style={{ width: 28, height: 28, borderRadius: 7, background: "rgba(239,68,68,0.18)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "#ef4444" }}>T</div>
+                  <div style={{ width: 28, height: 28, borderRadius: 7, background: "rgba(239,68,68,0.18)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "#ef4444" }}>{currentStock.companyName.charAt(0)}</div>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>Tesla</div>
-                    <div style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", fontWeight: 600 }}>TSLA · Current</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>{currentStock.companyName}</div>
+                    <div style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", fontWeight: 600 }}>{currentStock.symbol}</div>
                   </div>
                 </div>
  
@@ -561,7 +644,22 @@ export default function AIStockComparison() {
               {/* Stock cards */}
               <div className="ac-cards" style={{ display: "flex", alignItems: "stretch", gap: 0, position: "relative", marginBottom: 18 }}>
                 {/* <StockCard stock={BASE_STOCK} align="left" animate={showResult} /> */}
- 
+
+                <StockCard
+  stock={{
+    ticker: currentStock.symbol,
+    name: currentStock.companyName,
+    price: `$${currentStock.price}`,
+    logo: currentStock.companyName.charAt(0),
+    color: "#ef4444",
+    rec: compData?.recommendation || "BUY",
+    confidence: compData?.winnerConf || 0,
+    risk: compData?.risk || "Medium",
+  }}
+  align="left"
+  animate={showResult}
+/>
+      
                 {/* VS center */}
                 <div style={{
                   display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
@@ -586,7 +684,16 @@ export default function AIStockComparison() {
                   }} />
                 </div>
  
-                <StockCard stock={compared} align="right" animate={showResult} />
+                <StockCard
+                stock={{
+                  ...compared,
+                  rec: compData.recommendation,
+                  confidence: compData.winnerConf,
+                  risk: compData.risk,
+                }}
+                align="right"
+                animate={showResult}
+              />
               </div>
  
               {/* AI Summary */}
@@ -632,15 +739,45 @@ export default function AIStockComparison() {
                       Better Investment
                     </span>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                    <div style={{ width: 30, height: 30, borderRadius: 8, background: `${winnerStock.color}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: winnerStock.color }}>
-                      {winnerStock.logo}
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 15, fontWeight: 750, color: "#fff", letterSpacing: "-0.01em" }}>{winnerStock.name}</div>
-                      <div style={{ fontSize: 10.5, color: "#22c55e", fontWeight: 700 }}>{compData.winnerConf}% Confidence</div>
-                    </div>
-                  </div>
+                  <div
+  style={{
+    width: 30,
+    height: 30,
+    borderRadius: 8,
+    background: "rgba(34,197,94,0.2)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: 13,
+    fontWeight: 800,
+    color: "#22c55e",
+  }}
+>
+  {(winnerStock.symbol || winnerStock.ticker).charAt(0)}
+</div>
+
+<div>
+  <div
+    style={{
+      fontSize: 15,
+      fontWeight: 750,
+      color: "#fff",
+      letterSpacing: "-0.01em",
+    }}
+  >
+    {winnerStock.companyName || winnerStock.name}
+  </div>
+
+  <div
+    style={{
+      fontSize: 10.5,
+      color: "#22c55e",
+      fontWeight: 700,
+    }}
+  >
+    {compData.winnerConf}% Confidence
+  </div>
+</div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
                     {compData.reasons.map((r, i) => (
                       <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 5 }}>
@@ -653,16 +790,17 @@ export default function AIStockComparison() {
  
                 {/* Progress bars */}
                 <div className="ac-bars" style={{ flex: 1, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px 20px" }}>
-                  {/* {compData.bars.map((bar, i) => (
+                  {compData.bars.map((bar, i) => (
                     <CompareBarWithTicker
                       key={bar.label}
                       label={bar.label}
                       aVal={bar.a} bVal={bar.b}
-                      aColor={BASE_STOCK.color} bColor={compared.color}
+                      aColor="#ef4444" bColor={compared.color}
+                      aTicker={currentStock.symbol}
                       bTicker={compared.ticker}
                       delay={200 + i * 100}
                     />
-                  ))} */}
+                  ))}
                 </div>
               </div>
  

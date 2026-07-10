@@ -498,8 +498,6 @@ export default function MarketGuardSignup() {
     if (response.ok) {
       localStorage.setItem("token", data.access_token);
 
-      alert("Account Created Successfully!");
-
       navigate("/dashboard");
     } else {
       alert(data.detail);

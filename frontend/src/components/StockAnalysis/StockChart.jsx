@@ -88,7 +88,14 @@ const TIMEFRAME_CONFIG = {
 };
 
 // ─── Custom Tooltip ─────────────────────────────────────────────────────────
-const CustomTooltip = ({ active, payload, label, formatTime }) => {
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+  formatTime,
+  symbol,
+  spikeAnalysis,
+}) => {
   if (!active || !payload || !payload.length) return null;
   const price = payload[0]?.value;
   const volume = payload[0]?.payload?.volume;
@@ -109,7 +116,11 @@ const CustomTooltip = ({ active, payload, label, formatTime }) => {
         {formatTime ? formatTime(label) : label}
       </p>
       <p style={{ color: "#22c55e", fontSize: "18px", fontWeight: "700", margin: "0 0 4px 0", fontFamily: "monospace" }}>
-        ${price?.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        {symbol.endsWith(".NS") || symbol.endsWith(".BO") ? "₹" : "$"}
+        {price?.toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
       </p>
       <p style={{ color: "#4b5563", fontSize: "11px", margin: 0, fontFamily: "monospace" }}>
         Vol: {(volume / 1000).toFixed(0)}K
@@ -127,9 +138,10 @@ const CustomActiveDot = ({ cx, cy }) => (
 );
 
 // ─── Main Component ──────────────────────────────────────────────────────────
-export default function StockChart({ symbol = "TSLA", basePrice = 256.4 }) {
+export default function StockChart({ symbol = "TSLA", basePrice = 256.4, spikeAnalysis,}) {
+  console.log("Spike Analysis:", spikeAnalysis);
   const [loading, setLoading] = useState(true);
-const [chartData, setChartData] = useState([]);
+  const [chartData, setChartData] = useState([]);
 
 const [activeTimeframe, setActiveTimeframe] = useState("1D");
 const [animationKey, setAnimationKey] = useState(0);
@@ -163,6 +175,7 @@ const [isTransitioning, setIsTransitioning] = useState(false);
   // }, [activeTimeframe, buildData]);
 
   useEffect(() => {
+    console.log("🔥 useEffect Running", symbol);
   async function loadChart() {
     try {
       setLoading(true);
@@ -179,18 +192,35 @@ const [isTransitioning, setIsTransitioning] = useState(false);
 const period = PERIOD_MAP[activeTimeframe];
 
 const res = await fetch(
-  `http://127.0.0.1:8000/api/stocks/${symbol}/history?period=${period}`
-);
+  `http://127.0.0.1:8000/api/stocks/${symbol}/history?period=${period}`);
 
-      const data = await res.json();
 
-      const formatted = data.map((item) => ({
-        time: item.date,
-        price: item.close,
-        volume: item.volume,
-      }));
 
+
+console.log("✅ Fetch Response:", res);
+const data = await res.json();
+
+console.log("Raw API Data:", data);
+// console.log("Is Array?", Array.isArray(data));
+console.log("Length:", data.length);
+
+const formatted = data.map((item) => ({
+  time: item.date,
+  price: item.close,
+  volume: item.volume,
+}));
+      console.log("FORMATTED DATA");
+      console.table(formatted);
+
+      console.log("PRICE ARRAY");
+      console.log(formatted.map(x => x.price));
+      // console.log(
+      // formatted.map((x) => x.price)
+      // );
+
+      window.chartData = formatted;
       setChartData(formatted);
+      // window.chartData = formatted;
 
       const first = formatted[0]?.price;
       const last = formatted[formatted.length - 1]?.price;
@@ -204,7 +234,7 @@ const res = await fetch(
         positive: change >= 0,
       });
 
-      setAnimationKey((k) => k + 1);
+      // setAnimationKey((k) => k + 1);
     } catch (err) {
       console.error(err);
     } finally {
@@ -416,8 +446,12 @@ const res = await fetch(
             <p className="mg-title">{symbol} · {cfg.label}</p>
             <div className="mg-price-row">
               <span className="mg-price">
-                ${currentPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </span>
+              {(symbol.endsWith(".NS") || symbol.endsWith(".BO")) ? "₹" : "$"}
+              {currentPrice.toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </span>
               <span className={`mg-change ${priceChange.positive ? "positive" : "negative"}`}>
                 {priceChange.positive ? "▲" : "▼"}{" "}
                 {Math.abs(priceChange.value).toFixed(2)} ({Math.abs(priceChange.pct).toFixed(2)}%)
@@ -442,7 +476,7 @@ const res = await fetch(
         <div className={`mg-chart-wrap${isTransitioning ? " transitioning" : ""}`}>
           <ResponsiveContainer width="100%" height={480}>
             <AreaChart
-              key={animationKey}
+              // key={animationKey}
               data={chartData}
               margin={{ top: 10, right: 8, left: 0, bottom: 0 }}
             >
@@ -460,9 +494,17 @@ const res = await fetch(
                 stroke="rgba(255,255,255,0.04)"
               />
 
-              <XAxis
+              {/* <XAxis
                 dataKey="time"
-                tickFormatter={(date) => date.slice(5)}
+                tickFormatter={(date) =>
+                new Date(date).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+                } */}
+                <XAxis
+                dataKey="time"
+                tickFormatter={(value) => value.slice(11, 16)}
                 tickCount={cfg.tickCount}
                 tick={{ fill: "#4b5563", fontSize: 11, fontFamily: "JetBrains Mono, monospace" }}
                 axisLine={{ stroke: "rgba(255,255,255,0.06)" }}
@@ -473,7 +515,12 @@ const res = await fetch(
 
               <YAxis
                 domain={[minPrice - padding, maxPrice + padding]}
-                tickFormatter={(v) => `$${v.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
+                tickFormatter={(v) =>
+                  `${symbol.endsWith(".NS") || symbol.endsWith(".BO") ? "₹" : "$"}${v.toLocaleString("en-US", {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  })}`
+                }
                 tick={{ fill: "#4b5563", fontSize: 11, fontFamily: "JetBrains Mono, monospace" }}
                 axisLine={false}
                 tickLine={false}
@@ -481,10 +528,15 @@ const res = await fetch(
                 tickCount={6}
               />
 
-              <Tooltip
-                content={<CustomTooltip formatTime={cfg.format} />}
-                cursor={{ stroke: "rgba(34,197,94,0.25)", strokeWidth: 1, strokeDasharray: "4 3" }}
-              />
+             <Tooltip
+              content={
+                <CustomTooltip
+                  formatTime={cfg.format}
+                  symbol={symbol}
+                  spikeAnalysis={spikeAnalysis}
+                />
+              }
+            />
 
               <ReferenceLine
                 y={basePrice}
@@ -494,17 +546,14 @@ const res = await fetch(
               />
 
               <Area
-                type="monotoneX"
-                dataKey="price"
-                stroke="#22c55e"
-                strokeWidth={1.8}
-                fill="url(#emeraldGradient)"
-                dot={false}
-                activeDot={<CustomActiveDot />}
-                isAnimationActive={true}
-                animationDuration={900}
-                animationEasing="ease-out"
-              />
+              type="linear"
+              dataKey="price"
+              stroke="#22c55e"
+              strokeWidth={2}
+              fill="url(#emeraldGradient)"
+              dot={false}
+              activeDot={<CustomActiveDot />}
+            />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -521,6 +570,7 @@ const res = await fetch(
           gap: "8px",
           position: "relative",
           zIndex: 1,
+
         }}>
           <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "11px", color: "#374151" }}>
             {chartData.length > 0
@@ -537,6 +587,61 @@ const res = await fetch(
             </span>
           </div>
         </div>
+        {spikeAnalysis && (
+  <div
+    style={{
+      marginTop: "20px",
+      padding: "18px",
+      borderRadius: "12px",
+      background: "rgba(255,255,255,0.03)",
+      border: "1px solid rgba(255,255,255,0.08)",
+    }}
+  >
+    <h3
+      style={{
+        color:
+          spikeAnalysis.direction === "High Spike"
+            ? "#22c55e"
+            : "#ef4444",
+        marginBottom: "10px",
+      }}
+    >
+      {spikeAnalysis.direction}
+    </h3>
+
+    <p style={{ color: "#ffffff", marginBottom: "10px" }}>
+      AI Confidence: {spikeAnalysis.confidence}%
+    </p>
+
+    <p style={{ color: "#9ca3af", marginBottom: "12px" }}>
+      {spikeAnalysis.headline}
+    </p>
+
+    {spikeAnalysis.reasons.map((item, index) => (
+      <p
+        key={index}
+        style={{
+          color: "#d1d5db",
+          margin: "4px 0",
+        }}
+      >
+        • {item}
+      </p>
+    ))}
+
+    <p
+      style={{
+        marginTop: "12px",
+        color: "#6b7280",
+        fontSize: "12px",
+      }}
+    >
+      Source: {spikeAnalysis.source}
+    </p>
+  </div>
+)}
+
+{/* </div> */}
       </div>
     </>
   );

@@ -537,6 +537,7 @@ export default function MarketGuardLogin() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const nvdaPoints = [
     { x: 0, y: 34 }, { x: 16, y: 30 }, { x: 32, y: 33 }, { x: 48, y: 24 },
@@ -559,6 +560,8 @@ export default function MarketGuardLogin() {
     { symbol: "AAPL", change: "+1.25%", price: "$195.42" },
   ];
   const handleLogin = async () => {
+  setError("");
+
   try {
     const response = await fetch("http://127.0.0.1:8000/api/auth/login", {
       method: "POST",
@@ -576,14 +579,12 @@ export default function MarketGuardLogin() {
     if (response.ok) {
       localStorage.setItem("token", data.access_token);
 
-      alert("Login Successful!");
-
       navigate("/dashboard");
     } else {
-      alert(data.detail);
+      setError(data.detail || "Incorrect email or password");
     }
   } catch (err) {
-    alert("Server Error");
+    setError("Server Error. Please try again.");
     console.error(err);
   }
 };
@@ -781,6 +782,11 @@ export default function MarketGuardLogin() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   />
+                  {error && (
+                  <p className="mt-2 text-sm text-red-500 font-medium">
+                    {error}
+                  </p>
+                  )}
                 </div>
 
                 <div className="mt-3.5 flex items-center justify-between">

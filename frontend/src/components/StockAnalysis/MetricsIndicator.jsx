@@ -11,80 +11,7 @@ import {
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
-const METRICS = [
-  {
-    id: "market-cap",
-    label: "Market Cap",
-    value: "$820B",
-    description: "Total market value of the company.",
-    icon: TrendingUp,
-    color: "emerald",
-    status: "Large Cap",
-  },
-  {
-    id: "pe-ratio",
-    label: "P/E Ratio",
-    value: "58.4",
-    description: "Price compared to earnings per share.",
-    icon: BarChart2,
-    color: "yellow",
-    status: "Elevated",
-  },
-  {
-    id: "eps",
-    label: "EPS",
-    value: "$4.31",
-    description: "Earnings generated per share.",
-    icon: DollarSign,
-    color: "green",
-    status: null,
-  },
-  {
-    id: "revenue",
-    label: "Revenue",
-    value: "$95.4B",
-    description: "Total company revenue.",
-    icon: Wallet,
-    color: "blue",
-    status: null,
-  },
-  {
-    id: "net-income",
-    label: "Net Income",
-    value: "$15.2B",
-    description: "Profit after all expenses.",
-    icon: PiggyBank,
-    color: "emerald",
-    status: null,
-  },
-  {
-    id: "dividend",
-    label: "Dividend Yield",
-    value: "0%",
-    description: "No dividend currently paid.",
-    icon: Percent,
-    color: "gray",
-    status: "None",
-  },
-  {
-    id: "beta",
-    label: "Beta",
-    value: "1.82",
-    description: "Measures stock price volatility.",
-    icon: Activity,
-    color: "red",
-    status: "High Vol",
-  },
-  {
-    id: "52w-range",
-    label: "52W Range",
-    value: "$138 – $299",
-    description: "Price range over the past year.",
-    icon: CandlestickChart,
-    color: "purple",
-    status: null,
-  },
-];
+
 
 // ─── Color tokens ─────────────────────────────────────────────────────────────
 
@@ -204,7 +131,81 @@ function MetricCard({ metric }) {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-export default function FinancialMetrics() {
+export default function FinancialMetrics({ stock }) {
+    const METRICS = [
+  {
+    id: "market-cap",
+    label: "Market Cap",
+    value: "$820B",
+    description: "Total market value of the company.",
+    icon: TrendingUp,
+    color: "emerald",
+    status: "Large Cap",
+  },
+  {
+    id: "pe-ratio",
+    label: "P/E Ratio",
+    value: "58.4",
+    description: "Price compared to earnings per share.",
+    icon: BarChart2,
+    color: "yellow",
+    status: "Elevated",
+  },
+  {
+    id: "eps",
+    label: "EPS",
+    value: "$4.31",
+    description: "Earnings generated per share.",
+    icon: DollarSign,
+    color: "green",
+    status: null,
+  },
+  {
+    id: "revenue",
+    label: "Revenue",
+    value: "$95.4B",
+    description: "Total company revenue.",
+    icon: Wallet,
+    color: "blue",
+    status: null,
+  },
+  {
+    id: "net-income",
+    label: "Net Income",
+    value: "$15.2B",
+    description: "Profit after all expenses.",
+    icon: PiggyBank,
+    color: "emerald",
+    status: null,
+  },
+  {
+    id: "dividend",
+    label: "Dividend Yield",
+    value: "0%",
+    description: "No dividend currently paid.",
+    icon: Percent,
+    color: "gray",
+    status: "None",
+  },
+  {
+    id: "beta",
+    label: "Beta",
+    value: "1.82",
+    description: "Measures stock price volatility.",
+    icon: Activity,
+    color: "red",
+    status: "High Vol",
+  },
+  {
+    id: "52w-range",
+    label: "52W Range",
+    value: "$138 – $299",
+    description: "Price range over the past year.",
+    icon: CandlestickChart,
+    color: "purple",
+    status: null,
+  },
+];
   return (
     <>
       <style>{`

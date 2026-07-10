@@ -17,9 +17,9 @@ import {
 } from "lucide-react";
 
 const NAV_LINKS = [
-  { label: "Dashboard", icon: LayoutDashboard, href: "#" },
-  { label: "Analyze", icon: BarChart2, href: "#", active: true },
-  { label: "Watchlist", icon: Bookmark, href: "#" },
+  { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
+  { label: "Analyze", icon: BarChart2, href: "#" },
+  { label: "Watchlist", icon: Bookmark, href: "/dashboard" },
   { label: "News", icon: Newspaper, href: "#" },
 ];
 
@@ -286,7 +286,33 @@ export default function Navbar() {
               key={label}
               href={href}
               className={`mg-nav-link${activeLink === label ? " active" : ""}`}
-              onClick={(e) => { e.preventDefault(); setActiveLink(label); }}
+              onClick={async (e) => {
+  e.preventDefault();
+
+  setActiveLink(label);
+
+  if (label === "Watchlist") {
+    try {
+      const currentSymbol =
+        window.location.pathname.split("/").pop();
+        console.log("Path:", window.location.pathname);
+        console.log("Current Symbol:", currentSymbol);
+
+      await fetch(
+        `http://127.0.0.1:8000/api/watchlist/add?user_id=1&symbol=${currentSymbol}`,
+        {
+          method: "POST",
+        }
+      );
+
+      navigate("/dashboard");
+    } catch (err) {
+      console.error(err);
+    }
+  } else {
+    navigate(href);
+  }
+}}
             >
               <Icon size={14} strokeWidth={2} />
               {label}

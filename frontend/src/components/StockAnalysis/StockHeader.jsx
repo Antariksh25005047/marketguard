@@ -59,7 +59,7 @@ function StatCard({ label, value }) {
   );
 }
 
-export default function StockHeader({ stock }) {
+export default function StockHeader({ stock, onAddWatchlist }) {
   const companyName = stock?.companyName || "Unknown Company";
   const ticker = stock?.symbol || "N/A";
   const price = stock?.price || 0;
@@ -74,6 +74,8 @@ export default function StockHeader({ stock }) {
   const marketCap = stock?.marketCap?.toLocaleString() || "-";
   const volume = stock?.volume?.toLocaleString() || "-";
   const high52w = stock?.high52w || "-";
+  const isIndianStock =
+  ticker.endsWith(".NS") || ticker.endsWith(".BO");
   // companyName = "Tesla Inc.",
   // ticker = "TSLA",
   // price = 256.4,
@@ -85,6 +87,9 @@ export default function StockHeader({ stock }) {
   const isPositive = changePercent >= 0;
   const changeColor = isPositive ? "#4ade80" : "#ef4444";
   console.log("StockHeader received:", stock);
+  console.log("Ticker:", ticker);
+  console.log("Price:", price);
+  console.log("isIndianStock:", isIndianStock);
 
   return (
     <header
@@ -94,6 +99,9 @@ export default function StockHeader({ stock }) {
         border: "1px solid rgba(255,255,255,0.08)",
       }}
     >
+      {/* <h1 style={{ color: "red", fontSize: "50px" }}>
+        TEST HEADER
+      </h1> */}
       <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
         {/* ----------------------------- LEFT: identity + price ----------------------------- */}
         <div className="min-w-0">
@@ -114,30 +122,65 @@ export default function StockHeader({ stock }) {
           </div>
 
           <div className="mt-4 flex flex-wrap items-end gap-3">
-            <span className="text-[36px] font-extrabold leading-none tracking-tight text-white sm:text-[42px]">
-              ${price.toFixed(2)}
-            </span>
-            <span
-              className="flex items-center gap-1 pb-1 text-[15px] font-semibold sm:text-[16px]"
-              style={{ color: changeColor }}
-            >
-              {isPositive ? (
-                <TrendUpIcon className="h-4 w-4" />
-              ) : (
-                <TrendDownIcon className="h-4 w-4" />
-              )}
-              {isPositive ? "+" : ""}
-              {changePercent.toFixed(1)}%
-            </span>
-          </div>
+  <span className="text-[36px] font-extrabold leading-none tracking-tight text-white sm:text-[42px]">
+    {isIndianStock ? "₹" : "$"}
+    {price.toFixed(2)}
+  </span>
+
+  <span
+    className="flex items-center gap-1 pb-1 text-[15px] font-semibold sm:text-[16px]"
+    style={{ color: changeColor }}
+  >
+    {isPositive ? (
+      <TrendUpIcon className="h-4 w-4" />
+    ) : (
+      <TrendDownIcon className="h-4 w-4" />
+    )}
+    {isPositive ? "+" : ""}
+    {changePercent.toFixed(1)}%
+  </span>
+</div>
+
+{/* ⭐ Button yahan hoga */}
+{/* <div className="mt-5">
+  <button
+    onClick={() => {
+      console.log("BUTTON CLICKED");
+      onAddWatchlist();
+    }}
+    className="rounded-lg bg-green-500 px-4 py-2 text-black font-semibold hover:bg-green-400"
+  >
+    ⭐ Add to Watchlist
+  </button>
+</div> */}
         </div>
 
         {/* ----------------------------- RIGHT: stat cards ----------------------------- */}
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:flex lg:gap-3">
-          <StatCard label="Market Cap" value={marketCap} />
-          <StatCard label="Volume" value={volume} />
-          <StatCard label="52W High" value={high52w} />
-        </div>
+        <div className="flex flex-col items-end gap-4">
+
+  <button
+    onClick={onAddWatchlist}
+    className="
+      flex items-center gap-2
+      rounded-xl
+      bg-green-500
+      px-5 py-3
+      font-semibold
+      text-black
+      hover:bg-green-400
+      transition-all
+    "
+  >
+    ⭐ Add to Watchlist
+  </button>
+
+  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:flex lg:gap-3">
+    <StatCard label="Market Cap" value={marketCap} />
+    <StatCard label="Volume" value={volume} />
+    <StatCard label="52W High" value={high52w} />
+  </div>
+
+</div>
       </div>
     </header>
   );

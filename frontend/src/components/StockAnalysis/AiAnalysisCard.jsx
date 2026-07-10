@@ -150,16 +150,16 @@ function CircularProgress({ value, color, size = 96 }) {
         <span
           style={{
             fontFamily: "JetBrains Mono, monospace",
-            fontSize: "20px",
+            fontSize: "12px",
             fontWeight: "700",
             color,
             lineHeight: 1,
           }}
         >
-          {animated}%
+          {animated}/100
         </span>
-        <span style={{ fontSize: "9px", color: "#6b7280", marginTop: "2px", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-          score
+        <span style={{ fontSize: "7px", color: "#6b7280", marginTop: "2px", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+          AI Score
         </span>
       </div>
     </div>
@@ -208,13 +208,22 @@ function RiskBars({ risk }) {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function AIAnalysisCard({
-  symbol = "AAPL",
-  recommendation = "BUY",
+    symbol,
+    analysis,
 }) {
-  const [active, setActive] = useState(recommendation);
+  // const [active, setActive] = useState(recommendation);
   const [isHovered, setIsHovered] = useState(false);
   const [pulseAI, setPulseAI] = useState(false);
-  const data = ANALYSIS_DATA[active];
+  // const data = analysis;
+  if (!analysis) {
+    return (
+        <div className="text-white p-8">
+            AI Analysis Loading...
+        </div>
+    );
+}
+
+const data = analysis;
   const risk = RISK_CONFIG[data.risk];
   const upside = (((data.targetPrice - data.currentPrice) / data.currentPrice) * 100).toFixed(1);
   const isPositiveUpside = data.targetPrice >= data.currentPrice;
@@ -224,10 +233,10 @@ export default function AIAnalysisCard({
     return () => clearInterval(interval);
   }, []);
 
-  const switchRec = (rec) => {
-    if (rec === active) return;
-    setActive(rec);
-  };
+  // const switchRec = (rec) => {
+  //   if (rec === active) return;
+  //   setActive(rec);
+  // };
 
   return (
     <>
@@ -366,7 +375,7 @@ export default function AIAnalysisCard({
         .aic-main-row {
           display: flex;
           align-items: center;
-          gap: 20px;
+          gap: 12px;
           margin-bottom: 24px;
           padding: 20px;
           background: rgba(255,255,255,0.025);
@@ -383,13 +392,17 @@ export default function AIAnalysisCard({
           flex-shrink: 0;
         }
 
-        .aic-rec-label {
+        .aic-rec-pill {
           font-family: 'JetBrains Mono', monospace;
-          font-size: 10px;
-          font-weight: 600;
-          color: #6b7280;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
+          font-size: 14px;      /* 22 -> 16 */
+          font-weight: 700;
+          letter-spacing: 0.06em;
+          padding: 4px 14px;    /* 8 22 -> 6 16 */
+          border-radius: 8px;   /* 10 -> 8 */
+          border-width: 1px;
+          border-style: solid;
+          transition: all 0.3s ease;
+          white-space: nowrap;
         }
 
         .aic-rec-pill {
@@ -415,9 +428,9 @@ export default function AIAnalysisCard({
         .aic-confidence-block {
           display: flex;
           align-items: center;
-          gap: 16px;
+          gap: 10px;
           flex: 1;
-          min-width: 160px;
+          min-width: 90px;
         }
 
         .aic-confidence-text { flex: 1; }
@@ -607,7 +620,7 @@ export default function AIAnalysisCard({
           </div>
         </div>
 
-        {/* ── Demo Switcher ── */}
+        {/* ── Demo Switcher ──
         <div className="aic-switcher">
           {["BUY", "HOLD", "SELL"].map((r) => (
             <button
@@ -618,7 +631,7 @@ export default function AIAnalysisCard({
               {r}
             </button>
           ))}
-        </div>
+        </div> */}
 
         {/* ── Main Rec + Confidence ── */}
         <div className="aic-main-row">
@@ -633,18 +646,22 @@ export default function AIAnalysisCard({
                 boxShadow: `0 0 20px ${data.glow}`,
               }}
             >
-              {active}
+              {data.recommendation}
             </div>
           </div>
 
           <div className="aic-divider-v" />
 
           <div className="aic-confidence-block">
-            <CircularProgress value={data.confidence} color={data.color} size={88} />
+            <CircularProgress
+                value={data.aiScore ?? data.confidence}
+                color={data.color}
+                size={60}
+            />
             <div className="aic-confidence-text">
-              <div className="aic-conf-title">Confidence Score</div>
+              <div className="aic-conf-title">AI Score</div>
               <div className="aic-conf-desc">
-                Based on 47 technical and fundamental signals across multiple data sources.
+                {data.reasoning}
               </div>
             </div>
           </div>
@@ -688,7 +705,7 @@ export default function AIAnalysisCard({
               <div className="aic-price-line">
                 <span>Current</span>
                 <span className="aic-price-val">
-                  ${data.currentPrice.toFixed(2)}
+                  ₹{Number(data.currentPrice).toFixed(2)}
                 </span>
               </div>
               <div className="aic-price-line">
@@ -697,7 +714,7 @@ export default function AIAnalysisCard({
                   className="aic-price-val"
                   style={{ color: data.color, fontWeight: "700" }}
                 >
-                  ${data.targetPrice.toFixed(2)}
+                  ₹{Number(data.targetPrice).toFixed(2)}
                 </span>
               </div>
               <div
