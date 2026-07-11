@@ -209,6 +209,111 @@ def download_report(filename: str):
         media_type = "application/pdf",
         filename   = filename,
     )
+
+# ── Search endpoint ───────────────────────────
+@app.get("/api/search")
+def search_stocks(q: str = ""):
+    """Search stocks by symbol or name — used by HeroSearch"""
+    session = get_session()
+    try:
+        if not q or len(q) < 1:
+            stocks = session.query(Stock).filter_by(is_active=True).limit(10).all()
+        else:
+            stocks = session.query(Stock).filter(
+                Stock.symbol.ilike(f"%{q.upper()}%") |
+                Stock.name.ilike(f"%{q}%")
+            ).filter_by(is_active=True).limit(10).all()
+
+        return {
+            "results": [
+                {"symbol": s.symbol, "name": s.name}
+                for s in stocks
+            ]
+        }
+    finally:
+        session.close()
+
+
+
+@app.get("/api/watchlist/{user_id}")
+def get_watchlist(user_id: int):
+    """Get watchlist for a user — used by WatchList component"""
+    session = get_session()
+    try:
+        stocks = session.query(Stock).filter_by(is_active=True).all()
+        result = []
+
+        for stock in stocks:
+            # Latest price
+            latest = session.query(StockPrice).filter_by(
+                symbol=stock.symbol
+            ).order_by(StockPrice.timestamp.desc()).first()
+
+            # Previous price
+            previous = session.query(StockPrice).filter_by(
+                symbol=stock.symbol
+            ).order_by(StockPrice.timestamp.desc()).offset(1).first()
+
+            # Latest alert for risk
+            alert = session.query(Alert).filter_by(
+                symbol=stock.symbol
+            ).order_by(Alert.created_at.desc()).first()
+
+            # Latest news
+            news_items = session.query(NewsArticle).filter_by(
+                symbol=stock.symbol
+            ).order_by(NewsArticle.published_at.desc()).limit(2).all()
+
+            result.append({
+                "symbol":        stock.symbol,
+                "companyName":   stock.name,
+                "price":         latest.close if latest else 0,
+                "previousClose": previous.close if previous else 0,
+                "recommendation": "BUY" if (alert and alert.risk_score < 35)
+                                  else "SELL" if (alert and alert.risk_score > 60)
+                                  else "HOLD",
+                "news": [
+                    {
+                        "headline":  n.title[:100],
+                        "source":    n.source,
+                        "time":      n.published_at.strftime("%H:%M") if n.published_at else "",
+                        "sentiment": "positive" if n.pump_score < 30 else "negative",
+                        "confidence": 80,
+                    }
+                    for n in news_items
+                ],
+            })
+
+        return {"watchlist": result, "count": len(result)}
+    finally:
+        session.close()
+
+
+@app.get("/api/news/market")
+def get_market_news(limit: int = 20):
+    """Get latest market news — used by News component"""
+    session = get_session()
+    try:
+        articles = session.query(NewsArticle).order_by(
+            NewsArticle.published_at.desc()
+        ).limit(limit).all()
+
+        return {
+            "articles": [
+                {
+                    "id":          a.id,
+                    "title":       a.title,
+                    "url":         a.url,
+                    "source":      a.source,
+                    "publishedAt": a.published_at.isoformat() if a.published_at else None,
+                    "pump_score":  a.pump_score,
+                }
+                for a in articles
+            ],
+            "count": len(articles)
+        }
+    finally:
+        session.close()
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("backend.api.main:app", host="0.0.0.0", port=8000, reload=True)
