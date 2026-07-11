@@ -6,7 +6,55 @@ from ml_and_db.scrapers.stock_scraper import fetch_current_price, STOCKS
 
 router = APIRouter(prefix="/api/stocks", tags=["stocks"])
 
+@router.get("/movers")
+def get_market_movers():
+    """Get top gainers and losers — must be before /{symbol} route"""
+    try:
+        from ml_and_db.scrapers.stock_scraper import fetch_all_stocks
+        live_prices = fetch_all_stocks()
 
+        if not live_prices:
+            return {"gainers": [], "losers": []}
+
+        session = get_session()
+        gainers = []
+        losers  = []
+
+        for price_data in live_prices:
+            symbol = price_data["symbol"]
+            stock  = session.query(Stock).filter_by(symbol=symbol).first()
+            name   = stock.name if stock else symbol
+
+            current = price_data["close"]
+            open_p  = price_data["open"]
+            change  = round((current - open_p) / open_p * 100, 2) if open_p else 0.0
+
+            news = session.query(NewsArticle).filter_by(
+                symbol=symbol
+            ).order_by(NewsArticle.published_at.desc()).first()
+
+            item = {
+                "symbol":      symbol,
+                "companyName": name,
+                "price":       round(current, 2),
+                "change":      change,
+                "reason":      news.title[:100] if news else "Active trading detected",
+                "source":      news.source if news else "MarketGuard AI",
+            }
+
+            if change >= 0:
+                gainers.append(item)
+            else:
+                losers.append(item)
+
+        session.close()
+        gainers.sort(key=lambda x: x["change"], reverse=True)
+        losers.sort(key=lambda x: x["change"])
+
+        return {"gainers": gainers[:4], "losers": losers[:4]}
+
+    except Exception as e:
+        return {"gainers": [], "losers": [], "error": str(e)}
 
 def seed_stocks():
     session = get_session()
@@ -80,13 +128,17 @@ def get_all_stocks():
 @router.get("/{symbol}")
 def get_stock(symbol: str):
     """Get a single stock with its price history"""
+
+    # Prevent conflict with named routes
+    if symbol.lower() in ("movers", "watchlist", "scan", "refresh", "all"):
+        raise HTTPException(status_code=404, detail="Not found")
+
     session = get_session()
     try:
         stock = session.query(Stock).filter_by(symbol=symbol).first()
         if not stock:
             raise HTTPException(status_code=404, detail="Stock not found")
 
-       
         cutoff = datetime.utcnow() - timedelta(hours=24)
         prices = session.query(StockPrice).filter(
             StockPrice.symbol == symbol,
