@@ -52,13 +52,13 @@ const STATS = [
   { id: "sector", label: "Favorite Sector", value: "Tech", icon: PieChart, color: "purple" },
 ];
 
-const ACCOUNT_FIELDS = [
-  { label: "Full Name", value: USER.fullName, icon: User },
-  { label: "Email", value: USER.email, icon: Mail },
-  { label: "Username", value: USER.username, icon: AtSign },
-  { label: "Country", value: USER.country, icon: Globe },
-  { label: "Member Since", value: USER.joined, icon: Calendar },
-];
+// const ACCOUNT_FIELDS = [
+//   { label: "Full Name", value: fullName, icon: User },
+//   { label: "Email", value: email, icon: Mail },
+//   { label: "Username", value: user?.email?.split("@")[0], icon: AtSign },
+//   { label: "Country", value: "India", icon: Globe },
+//   { label: "Member Since", value: "2026", icon: Calendar },
+// ];
 
 const COLOR_MAP = {
   emerald: { icon: "#22C55E", bg: "rgba(34,197,94,0.10)", border: "rgba(34,197,94,0.18)" },
@@ -70,6 +70,22 @@ const COLOR_MAP = {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function ProfilePage() {
+    const user = JSON.parse(localStorage.getItem("user"));
+
+const fullName = user?.name || "Guest";
+const email = user?.email || "";
+const initials = fullName
+  .split(" ")
+  .map((word) => word[0])
+  .join("")
+  .toUpperCase();
+  const ACCOUNT_FIELDS = [
+  { label: "Full Name", value: fullName, icon: User },
+  { label: "Email", value: email, icon: Mail },
+  { label: "Username", value: user?.email?.split("@")[0], icon: AtSign },
+  { label: "Country", value: "India", icon: Globe },
+  { label: "Member Since", value: "2026", icon: Calendar },
+];
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -79,8 +95,9 @@ export default function ProfilePage() {
 
   const handleLogout = () => {
   localStorage.removeItem("token");
+  localStorage.removeItem("user");
   navigate("/login");
-  };
+};
 
 
     
@@ -386,8 +403,8 @@ export default function ProfilePage() {
 
             <div id="pp-profile-menu" style={{ position: "relative" }}>
               <button className="pp-profile-btn" onClick={() => setProfileOpen((v) => !v)} aria-expanded={profileOpen}>
-                <div className="pp-avatar-sm">{USER.initials}</div>
-                <span className="pp-profile-name">{USER.fullName}</span>
+                <div className="pp-avatar-sm">{initials}</div>
+                <span className="pp-profile-name">{fullName}</span>
                 <ChevronDown size={14} className={`pp-chevron${profileOpen ? " open" : ""}`} strokeWidth={2.5} />
               </button>
               {profileOpen && (
@@ -459,12 +476,12 @@ export default function ProfilePage() {
 
           {/* Profile card */}
           <div className="pp-profile-card">
-            <div className="pp-avatar-lg">{USER.initials}</div>
-            <div className="pp-fullname">{USER.fullName}</div>
-            <div className="pp-email">{USER.email}</div>
+            <div className="pp-avatar-lg">{initials}</div>
+            <div className="pp-fullname">{fullName}</div>
+            <div className="pp-email">{email}</div>
             <div className="pp-badge-row">
               <span className="pp-user-badge"><Shield size={12} strokeWidth={2.5} /> MarketGuard AI User</span>
-              <span className="pp-joined-badge"><Calendar size={12} strokeWidth={2} /> Joined {USER.joined}</span>
+              <span className="pp-joined-badge"><Calendar size={12} strokeWidth={2} /> Joined 2026</span>
             </div>
           </div>
 

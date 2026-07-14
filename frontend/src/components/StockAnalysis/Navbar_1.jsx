@@ -24,6 +24,15 @@ const NAV_LINKS = [
 ];
 
 export default function Navbar() {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const name = user?.name || "Guest";
+
+  const initials = name
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -33,6 +42,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
   localStorage.removeItem("token");
+  localStorage.removeItem("user");
   navigate("/login");
   };
 
@@ -334,9 +344,9 @@ export default function Navbar() {
               onClick={() => setProfileOpen((v) => !v)}
               aria-expanded={profileOpen}
             >
-              <div className="mg-avatar">AG</div>
+              <div className="mg-avatar">{initials}</div>
               <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
-                <span className="mg-profile-name">Anuj Guptar</span>
+                <span className="mg-profile-name">{name}</span>
                 <span className="mg-profile-role">MarketGuard User</span>
               </div>
               <ChevronDown
@@ -431,10 +441,15 @@ export default function Navbar() {
 
             <div className="mg-mobile-footer">
               <div className="mg-mobile-user">
-                <div className="mg-avatar" style={{ width: 36, height: 36, fontSize: 13 }}>AG</div>
+                <div
+                  className="mg-avatar"
+                  style={{ width: 36, height: 36, fontSize: 13 }}
+                >
+                  {initials}
+                </div>
                 <div>
-                  <div className="mg-mobile-user-name">Anuj Guptta</div>
-                  <div className="mg-mobile-user-email">gganujgupta18@gmail.com</div>
+                  <div className="mg-mobile-user-name">{name}</div>
+                  <div className="mg-mobile-user-email">{email}</div>
                 </div>
               </div>
               <button className="mg-mobile-link" onClick={() => setMobileOpen(false)}>
