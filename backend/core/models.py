@@ -90,3 +90,10 @@ class Alert(Base):
     is_resolved = Column(Boolean, default = False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
+class Watchlist(Base):
+    __tablename__ = "watchlist"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, nullable=False)
+    stock_symbol = Column(String(20), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)

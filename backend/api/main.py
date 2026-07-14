@@ -12,6 +12,8 @@ from backend.api.stock_routes import router as stock_router, seed_stocks
 from backend.api.news_routes import router as news_router
 from backend.api.alert_routes import router as alert_router
 from ml_and_db.scheduler import start_scheduler, stop_scheduler
+from backend.api.watchlist_routes import router as watchlist_router
+from backend.api.search_routes import router as search_router
 
 app = FastAPI(title="MarketGuard AI", version="1.0.0")
 
@@ -27,6 +29,8 @@ app.include_router(auth_router)
 app.include_router(stock_router)
 app.include_router(news_router)
 app.include_router(alert_router)
+app.include_router(watchlist_router)
+app.include_router(search_router)
 
 
 @app.on_event("startup")

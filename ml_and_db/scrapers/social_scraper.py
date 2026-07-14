@@ -3,16 +3,26 @@ import requests
 from datetime import datetime, timezone
 
 STOCKS = [
-     {"symbol": "RELIANCE.NS",  "keyword": "Reliance Industries stock"},
-    {"symbol": "TCS.NS",       "keyword": "TCS stock NSE"},
-    {"symbol": "SUZLON.NS",    "keyword": "Suzlon Energy stock"},
-    {"symbol": "RPOWER.NS",    "keyword": "Reliance Power stock"},
-    {"symbol": "YESBANK.NS",   "keyword": "Yes Bank stock"},
-    {"symbol": "ETERNAL.NS",    "keyword": "Zomato stock NSE"},
-    {"symbol": "ADANIENT.NS",  "keyword": "Adani Enterprises stock"},
+    # 🇺🇸 US Stocks
+    {"symbol": "AAPL", "keyword": "Apple stock"},
+    {"symbol": "TSLA", "keyword": "Tesla stock"},
+    {"symbol": "NVDA", "keyword": "NVIDIA stock"},
+    {"symbol": "MSFT", "keyword": "Microsoft stock"},
+    {"symbol": "GOOGL", "keyword": "Google stock"},
+    {"symbol": "META", "keyword": "Meta stock"},
+    {"symbol": "AMZN", "keyword": "Amazon stock"},
+
+    # 🇮🇳 Indian Stocks
+    {"symbol": "RELIANCE.NS", "keyword": "Reliance Industries stock"},
+    {"symbol": "TCS.NS", "keyword": "TCS stock NSE"},
+    {"symbol": "SUZLON.NS", "keyword": "Suzlon Energy stock"},
+    {"symbol": "RPOWER.NS", "keyword": "Reliance Power stock"},
+    {"symbol": "YESBANK.NS", "keyword": "Yes Bank stock"},
+    {"symbol": "ETERNAL.NS", "keyword": "Zomato stock NSE"},
+    {"symbol": "ADANIENT.NS", "keyword": "Adani Enterprises stock"},
     {"symbol": "TMCV.NS", "keyword": "Tata Motors stock"},
-    {"symbol": "IRFC.NS",      "keyword": "IRFC stock NSE"},
-    {"symbol": "HDFCBANK.NS",  "keyword": "HDFC Bank stock"},
+    {"symbol": "IRFC.NS", "keyword": "IRFC stock NSE"},
+    {"symbol": "HDFCBANK.NS", "keyword": "HDFC Bank stock"},
 ]
 
 PUMP_WORDS = [
