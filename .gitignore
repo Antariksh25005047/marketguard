@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Environment
+.env
+
+# Database
+*.db
+
+# Node
+node_modules/
+
+# VS Code
+.vscode/

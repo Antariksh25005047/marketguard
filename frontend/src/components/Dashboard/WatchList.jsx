@@ -322,7 +322,7 @@ export default function Watchlist({
               No stocks match &ldquo;{query}&rdquo;.
             </div>
           ) : (
-            filtered.map((stock, idx) => {
+            filtered.slice(0,4).map((stock, idx) => {
               const recommendation = stock.recommendation || "HOLD";
               const rec =
                 RECOMMENDATION_STYLES[recommendation] ||

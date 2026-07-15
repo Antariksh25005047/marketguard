@@ -39,15 +39,6 @@ export default function TopBar() {
 
   const [profileOpen, setProfileOpen] = useState(false);
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
-
-  const fullName = user?.name || "Guest";
-
-  const initials = fullName
-    .split(" ")
-    .map((word) => word[0])
-    .join("")
-    .toUpperCase();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -113,7 +104,7 @@ export default function TopBar() {
             className="group flex items-center gap-1.5 rounded-full border border-transparent py-1 pl-1 pr-2 transition-all duration-300 hover:border-white/[0.1] hover:bg-white/[0.04]"
           >
             <span className="relative flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.12] bg-emerald/10 font-display text-sm font-semibold text-emerald shadow-sm transition-transform duration-300 hover:scale-105">
-              {initials}
+              AG
               <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-charcoal bg-emerald" />
             </span>
             <span className="text-white/40 transition-colors duration-200 group-hover:text-white/70">

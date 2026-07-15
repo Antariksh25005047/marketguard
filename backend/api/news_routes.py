@@ -5,7 +5,10 @@ from ml_and_db.scrapers.news_scrapers import fetch_rss_news
 from ml_and_db.scrapers.social_scraper import fetch_all_stock_news
 
 
-router = APIRouter(prefix="/api/news", tags=["news"])
+router = APIRouter(
+    prefix="/api/news",
+    tags=["news"]
+)
 
 
 def save_articles(articles: list):
@@ -13,9 +16,6 @@ def save_articles(articles: list):
     session = get_session()
     saved = 0
     try:
-        for a in articles:
-         if a.get("symbol") == "AAPL":
-             print(a)
         for a in articles:
             url = a.get("url", "")
             if not url:
@@ -80,35 +80,6 @@ def get_news(symbol: str = None, limit: int = 50):
     finally:
         session.close()
 
-@router.get("/market")
-def get_market_news():
-    session = get_session()
-    try:
-        articles = (
-            session.query(NewsArticle)
-            .order_by(NewsArticle.published_at.desc())
-            .limit(20)
-            .all()
-        )
-
-        return {
-            "articles": [
-                {
-                    "id": a.id,
-                    "title": a.title,
-                    "url": a.url,
-                    "source": a.source,
-                    "publishedAt": a.published_at.isoformat() if a.published_at else None,
-                    "image": None,
-                    "description": "",
-                }
-                for a in articles
-            ]
-        }
-
-    finally:
-        session.close()
-
 
 @router.get("/refresh")
 def refresh_news():
@@ -142,7 +113,6 @@ def get_pump_alerts(min_score: int = 25):
     """Get articles with high pump language score"""
     session = get_session()
     try:
-        
         articles = session.query(NewsArticle).filter(
             NewsArticle.pump_score >= min_score
         ).order_by(NewsArticle.pump_score.desc()).limit(20).all()

@@ -1,4 +1,5 @@
 import os
+import requests
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime, timedelta
@@ -29,8 +30,6 @@ app.include_router(auth_router)
 app.include_router(stock_router)
 app.include_router(news_router)
 app.include_router(alert_router)
-app.include_router(watchlist_router)
-app.include_router(search_router)
 
 
 @app.on_event("startup")
@@ -217,26 +216,45 @@ def download_report(filename: str):
 # ── Search endpoint ───────────────────────────
 @app.get("/api/search")
 def search_stocks(q: str = ""):
-    """Search stocks by symbol or name — used by HeroSearch"""
-    session = get_session()
+    if not q.strip():
+        return {"results": []}
+
     try:
-        if not q or len(q) < 1:
-            stocks = session.query(Stock).filter_by(is_active=True).limit(10).all()
-        else:
-            stocks = session.query(Stock).filter(
-                Stock.symbol.ilike(f"%{q.upper()}%") |
-                Stock.name.ilike(f"%{q}%")
-            ).filter_by(is_active=True).limit(10).all()
+        response = requests.get(
+            "https://query1.finance.yahoo.com/v1/finance/search",
+            params={
+                "q": q,
+                "quotesCount": 10,
+                "newsCount": 0,
+            },
+            headers={
+                "User-Agent": "Mozilla/5.0"
+            },
+            timeout=10,
+        )
 
+        response.raise_for_status()
+
+        data = response.json()
+
+        results = []
+
+        for item in data.get("quotes", []):
+            if item.get("quoteType") != "EQUITY":
+                continue
+
+            results.append({
+                "symbol": item.get("symbol"),
+                "name": item.get("shortname") or item.get("longname"),
+            })
+
+        return {"results": results}
+
+    except Exception as e:
         return {
-            "results": [
-                {"symbol": s.symbol, "name": s.name}
-                for s in stocks
-            ]
+            "results": [],
+            "error": str(e)
         }
-    finally:
-        session.close()
-
 
 
 @app.get("/api/watchlist/{user_id}")

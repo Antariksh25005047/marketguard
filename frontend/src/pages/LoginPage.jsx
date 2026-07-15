@@ -575,16 +575,11 @@ export default function MarketGuardLogin() {
     });
 
     const data = await response.json();
-    console.log(data);
 
     if (response.ok) {
-    // console.log("LOGIN DATA:", data);
+      localStorage.setItem("token", data.access_token);
 
-    localStorage.setItem("token", data.access_token);
-    localStorage.setItem("user", JSON.stringify(data.user));
-
-    navigate("/dashboard");
-
+      navigate("/dashboard");
     } else {
       setError(data.detail || "Incorrect email or password");
     }
