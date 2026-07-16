@@ -19,13 +19,22 @@ import Closing from "../components/Closing";
 export default function LandingPage() {
   return (
     <>
-      <Hero />
-      <TrendingStocks />
-      <MarketOverview />
-      <WhyMarketGuard />
-      {/* <Footer /> */}
-      {/* <WaterMark /> */}
-      <Closing />
-    </>
+  <section id="home">
+    <Hero />
+  </section>
+
+  <section id="markets">
+    <TrendingStocks />
+  </section>
+
+  <section id="about">
+    <MarketOverview />
+    <WhyMarketGuard />
+  </section>
+
+  <section id="contact">
+    <Closing />
+  </section>
+</>
   );
 }

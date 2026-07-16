@@ -577,9 +577,12 @@ export default function MarketGuardLogin() {
     const data = await response.json();
 
     if (response.ok) {
-      localStorage.setItem("token", data.access_token);
+    localStorage.setItem("token", data.access_token);
 
-      navigate("/dashboard");
+    // Save logged-in user
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    navigate("/dashboard");
     } else {
       setError(data.detail || "Incorrect email or password");
     }
@@ -831,7 +834,12 @@ export default function MarketGuardLogin() {
                   <span className="h-px flex-1 bg-white/10" />
                 </div>
 
-                <ShineButton variant="secondary">Create new account</ShineButton>
+                <ShineButton
+                    variant="secondary"
+                    onClick={() => navigate("/signup")}
+                >
+                    Create new account
+                </ShineButton>
 
                 <p className="mt-5 text-center text-[13.5px] text-gray-400">
                   Don&apos;t have an account?{" "}

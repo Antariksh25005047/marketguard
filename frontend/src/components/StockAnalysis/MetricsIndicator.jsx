@@ -1,5 +1,6 @@
 import {
   TrendingUp,
+  TrendingDown,
   BarChart2,
   DollarSign,
   Wallet,
@@ -132,11 +133,13 @@ function MetricCard({ metric }) {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function FinancialMetrics({ stock }) {
-    const METRICS = [
+    const metrics = [
   {
     id: "market-cap",
     label: "Market Cap",
-    value: "$820B",
+    value: stock?.marketCap
+      ? `$${(stock.marketCap / 1e9).toFixed(2)}B`
+      : "-",
     description: "Total market value of the company.",
     icon: TrendingUp,
     color: "emerald",
@@ -145,62 +148,62 @@ export default function FinancialMetrics({ stock }) {
   {
     id: "pe-ratio",
     label: "P/E Ratio",
-    value: "58.4",
+    value: stock?.peRatio?.toFixed(2) ?? "-",
     description: "Price compared to earnings per share.",
     icon: BarChart2,
     color: "yellow",
-    status: "Elevated",
+    status: null,
   },
   {
     id: "eps",
     label: "EPS",
-    value: "$4.31",
+    value: stock?.eps ?? "-",
     description: "Earnings generated per share.",
     icon: DollarSign,
     color: "green",
     status: null,
   },
   {
-    id: "revenue",
-    label: "Revenue",
-    value: "$95.4B",
-    description: "Total company revenue.",
+    id: "volume",
+    label: "Volume",
+    value: stock?.volume?.toLocaleString() ?? "-",
+    description: "Today's trading volume.",
     icon: Wallet,
     color: "blue",
     status: null,
   },
   {
-    id: "net-income",
-    label: "Net Income",
-    value: "$15.2B",
-    description: "Profit after all expenses.",
-    icon: PiggyBank,
-    color: "emerald",
-    status: null,
-  },
-  {
-    id: "dividend",
-    label: "Dividend Yield",
-    value: "0%",
-    description: "No dividend currently paid.",
-    icon: Percent,
-    color: "gray",
-    status: "None",
-  },
-  {
     id: "beta",
     label: "Beta",
-    value: "1.82",
+    value: stock?.beta ?? "-",
     description: "Measures stock price volatility.",
     icon: Activity,
     color: "red",
-    status: "High Vol",
+    status: "Volatility",
   },
   {
-    id: "52w-range",
-    label: "52W Range",
-    value: "$138 – $299",
-    description: "Price range over the past year.",
+    id: "52w-high",
+    label: "52W High",
+    value: stock?.high52w ?? "-",
+    description: "Highest price in last 52 weeks.",
+    icon: TrendingUp,
+    color: "green",
+    status: null,
+  },
+  {
+    id: "52w-low",
+    label: "52W Low",
+    value: stock?.low52w ?? "-",
+    description: "Lowest price in last 52 weeks.",
+    icon: TrendingDown,
+    color: "red",
+    status: null,
+  },
+  {
+    id: "currency",
+    label: "Currency",
+    value: stock?.currency ?? "-",
+    description: "Trading currency.",
     icon: CandlestickChart,
     color: "purple",
     status: null,
@@ -325,7 +328,7 @@ export default function FinancialMetrics({ stock }) {
         </div>
 
         <div className="fm-grid">
-          {METRICS.map((metric) => (
+          {metrics.map((metric) => (
             <MetricCard key={metric.id} metric={metric} />
           ))}
         </div>

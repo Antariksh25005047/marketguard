@@ -1,3 +1,6 @@
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+
 import {
   Activity,
   TrendingUp,
@@ -11,96 +14,96 @@ import {
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
-const INDICATORS = [
-  {
-    id: "rsi",
-    label: "RSI",
-    sublabel: "Relative Strength Index",
-    value: "56",
-    unit: "",
-    status: "Neutral",
-    description: "Momentum is balanced between buyers and sellers.",
-    icon: Activity,
-    color: "yellow",
-  },
-  {
-    id: "macd",
-    label: "MACD",
-    sublabel: "Moving Avg. Convergence",
-    value: "Bullish",
-    unit: "",
-    status: "Bullish",
-    description: "Positive momentum crossover detected.",
-    icon: TrendingUp,
-    color: "emerald",
-  },
-  {
-    id: "ema20",
-    label: "EMA 20",
-    sublabel: "Exponential Moving Average",
-    value: "Above Price",
-    unit: "",
-    status: "Bullish",
-    description: "Short-term trend remains strong.",
-    icon: Layers,
-    color: "green",
-  },
-  {
-    id: "ema50",
-    label: "EMA 50",
-    sublabel: "Exponential Moving Average",
-    value: "Above Price",
-    unit: "",
-    status: "Bullish",
-    description: "Long-term trend remains positive.",
-    icon: Layers,
-    color: "green",
-  },
-  {
-    id: "support",
-    label: "Support",
-    sublabel: "Key Price Level",
-    value: "$245.00",
-    unit: "",
-    status: "Support",
-    description: "Strong buying zone identified.",
-    icon: ArrowDownToLine,
-    color: "blue",
-  },
-  {
-    id: "resistance",
-    label: "Resistance",
-    sublabel: "Key Price Level",
-    value: "$272.00",
-    unit: "",
-    status: "Resistance",
-    description: "Major selling pressure zone.",
-    icon: ArrowUpToLine,
-    color: "red",
-  },
-  {
-    id: "volume",
-    label: "Volume",
-    sublabel: "24h Trading Volume",
-    value: "48.2M",
-    unit: "",
-    status: "High",
-    description: "Higher than average trading activity.",
-    icon: BarChart2,
-    color: "purple",
-  },
-  {
-    id: "trend",
-    label: "Trend Strength",
-    sublabel: "Directional Momentum",
-    value: "Strong Bullish",
-    unit: "",
-    status: "Strong",
-    description: "Overall trend remains firmly positive.",
-    icon: Zap,
-    color: "emerald",
-  },
-];
+// const INDICATORS = [
+//   {
+//     id: "rsi",
+//     label: "RSI",
+//     sublabel: "Relative Strength Index",
+//     value: "56",
+//     unit: "",
+//     status: "Neutral",
+//     description: "Momentum is balanced between buyers and sellers.",
+//     icon: Activity,
+//     color: "yellow",
+//   },
+//   {
+//     id: "macd",
+//     label: "MACD",
+//     sublabel: "Moving Avg. Convergence",
+//     value: "Bullish",
+//     unit: "",
+//     status: "Bullish",
+//     description: "Positive momentum crossover detected.",
+//     icon: TrendingUp,
+//     color: "emerald",
+//   },
+//   {
+//     id: "ema20",
+//     label: "EMA 20",
+//     sublabel: "Exponential Moving Average",
+//     value: "Above Price",
+//     unit: "",
+//     status: "Bullish",
+//     description: "Short-term trend remains strong.",
+//     icon: Layers,
+//     color: "green",
+//   },
+//   {
+//     id: "ema50",
+//     label: "EMA 50",
+//     sublabel: "Exponential Moving Average",
+//     value: "Above Price",
+//     unit: "",
+//     status: "Bullish",
+//     description: "Long-term trend remains positive.",
+//     icon: Layers,
+//     color: "green",
+//   },
+//   {
+//     id: "support",
+//     label: "Support",
+//     sublabel: "Key Price Level",
+//     value: "$245.00",
+//     unit: "",
+//     status: "Support",
+//     description: "Strong buying zone identified.",
+//     icon: ArrowDownToLine,
+//     color: "blue",
+//   },
+//   {
+//     id: "resistance",
+//     label: "Resistance",
+//     sublabel: "Key Price Level",
+//     value: "$272.00",
+//     unit: "",
+//     status: "Resistance",
+//     description: "Major selling pressure zone.",
+//     icon: ArrowUpToLine,
+//     color: "red",
+//   },
+//   {
+//     id: "volume",
+//     label: "Volume",
+//     sublabel: "24h Trading Volume",
+//     value: "48.2M",
+//     unit: "",
+//     status: "High",
+//     description: "Higher than average trading activity.",
+//     icon: BarChart2,
+//     color: "purple",
+//   },
+//   {
+//     id: "trend",
+//     label: "Trend Strength",
+//     sublabel: "Directional Momentum",
+//     value: "Strong Bullish",
+//     unit: "",
+//     status: "Strong",
+//     description: "Overall trend remains firmly positive.",
+//     icon: Zap,
+//     color: "emerald",
+//   },
+// ];
 
 // ─── Color tokens ─────────────────────────────────────────────────────────────
 
@@ -213,6 +216,111 @@ function IndicatorCard({ indicator }) {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function TechnicalIndicators() {
+
+  const { symbol } = useParams();
+
+  const [indicators, setIndicators] = useState([]);
+
+  useEffect(() => {
+
+    fetch(`http://127.0.0.1:8000/api/stocks/${symbol}/technical`)
+      .then(res => res.json())
+      .then(data => {
+
+        setIndicators([
+          {
+  id: "rsi",
+  label: "RSI",
+  sublabel: "Relative Strength Index",
+  value: data.rsi,
+  status: data.rsi > 70 ? "Overbought" : data.rsi < 30 ? "Oversold" : "Neutral",
+  description: "Relative Strength Index",
+  icon: Activity,
+  color: "yellow",
+},
+
+{
+  id: "macd",
+  label: "MACD",
+  sublabel: "Moving Avg. Convergence",
+  value: data.macd,
+  status: data.macd,
+  description: "Moving Average Convergence Divergence",
+  icon: TrendingUp,
+  color: data.macd === "Bullish" ? "emerald" : "red",
+},
+
+{
+  id: "ema20",
+  label: "EMA 20",
+  sublabel: "20 Day EMA",
+  value: `$${data.ema20}`,
+  status: "EMA",
+  description: "20 Day Exponential Moving Average",
+  icon: Layers,
+  color: "green",
+},
+
+{
+  id: "ema50",
+  label: "EMA 50",
+  sublabel: "50 Day EMA",
+  value: `$${data.ema50}`,
+  status: "EMA",
+  description: "50 Day Exponential Moving Average",
+  icon: Layers,
+  color: "green",
+},
+
+{
+  id: "support",
+  label: "Support",
+  sublabel: "Support Level",
+  value: `$${data.support}`,
+  status: "Support",
+  description: "Nearest Support",
+  icon: ArrowDownToLine,
+  color: "blue",
+},
+
+{
+  id: "resistance",
+  label: "Resistance",
+  sublabel: "Resistance Level",
+  value: `$${data.resistance}`,
+  status: "Resistance",
+  description: "Nearest Resistance",
+  icon: ArrowUpToLine,
+  color: "red",
+},
+
+{
+  id: "volume",
+  label: "Volume",
+  sublabel: "Today's Volume",
+  value: Number(data.volume).toLocaleString(),
+  status: "High",
+  description: "Trading Volume",
+  icon: BarChart2,
+  color: "purple",
+},
+
+{
+  id: "trend",
+  label: "Trend",
+  sublabel: "Overall Trend",
+  value: data.trend,
+  status: data.trend,
+  description: "Current Trend",
+  icon: Zap,
+  color: data.trend.includes("Bull") ? "emerald" : "red",
+}
+        ]);
+
+      });
+
+  }, [symbol]);
+
   return (
     <>
       <style>{`
@@ -356,7 +464,7 @@ export default function TechnicalIndicators() {
 
         {/* Cards grid */}
         <div className="ti-grid">
-          {INDICATORS.map((indicator) => (
+          {indicators.map((indicator) => (
             <IndicatorCard key={indicator.id} indicator={indicator} />
           ))}
         </div>

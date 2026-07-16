@@ -36,13 +36,21 @@ const NAV_LINKS = [
 
 // ─── Dummy profile data ─────────────────────────────────────────────────────
 
+const user = JSON.parse(localStorage.getItem("user"));
+
 const USER = {
-  fullName: "Alex Kumar",
-  email: "alex.kumar@marketguard.ai",
-  username: "@alexkumar",
+  fullName: user?.name || "Unknown User",
+  email: user?.email || "",
+  username: user?.email?.split("@")[0] || "",
   country: "India",
-  joined: "March 2024",
-  initials: "AK",
+  joined: "2026",
+  initials: user?.name
+    ? user.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+    : "U",
 };
 
 const STATS = [

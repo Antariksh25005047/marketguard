@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react'
+import { Link } from "react-router-dom"
 import Logo from './Logo'
 
-const LINKS = ['Home', 'Markets', 'About', 'Contact']
+const LINKS = [
+  { name: "Home", id: "home" },
+  { name: "Markets", id: "markets" },
+  { name: "About", id: "about" },
+  { name: "Contact", id: "contact" },
+];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -33,22 +39,22 @@ export default function Navbar() {
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-10">
         {/* Left — logo + wordmark */}
-        <a href="#" className="flex items-center gap-2.5">
+        <Link to="/" className="flex items-center gap-2.5">
           <Logo active={scrolled} />
           <span className="font-display text-lg font-semibold tracking-tight text-white">
             MarketGuard <span className="text-emerald">AI</span>
           </span>
-        </a>
+        </Link>
 
         {/* Center — nav links (desktop only) */}
         <div className="hidden items-center gap-10 md:flex">
           {LINKS.map((link) => (
             <a
-              key={link}
-              href="#"
+              key={link.id}
+              href={`#${link.id}`}
               className="group relative font-body text-sm text-white/65 transition-colors duration-200 hover:text-white"
             >
-              {link}
+              {link.name}
               <span className="absolute -bottom-1.5 left-0 h-px w-0 bg-emerald transition-all duration-300 group-hover:w-full" />
             </a>
           ))}
@@ -56,18 +62,18 @@ export default function Navbar() {
 
         {/* Right — actions (desktop only) */}
         <div className="hidden items-center gap-3 md:flex">
-          <a
-            href="#login"
+          <Link
+            to="/login"
             className="rounded-full border border-white/20 px-5 py-2 font-body text-sm text-white/85 transition-all duration-200 hover:border-white/40 hover:bg-white/5 hover:text-white"
           >
             Login
-          </a>
-          <a
-            href="#get-started"
+          </Link>
+          <Link
+            to="/signup"
             className="relative overflow-hidden rounded-full bg-emerald px-5 py-2 font-body text-sm font-semibold text-charcoal transition-all duration-300 hover:bg-emerald-dark hover:shadow-[0_0_22px_rgba(34,197,94,0.45)] active:scale-[0.97]"
           >
             Get Started
-          </a>
+          </Link>
         </div>
 
         {/* Mobile hamburger */}
@@ -104,30 +110,30 @@ export default function Navbar() {
           <div className="flex flex-col gap-1 pt-3">
             {LINKS.map((link) => (
               <a
-                key={link}
-                href="#"
+                key={link.id}
+                href={`#${link.id}`}
                 onClick={() => setMenuOpen(false)}
                 className="rounded-md px-2 py-3 font-body text-base text-white/80 transition-colors hover:bg-white/5 hover:text-white"
               >
-                {link}
+                {link.name}
               </a>
             ))}
           </div>
           <div className="mt-4 flex flex-col gap-3 border-t border-white/[0.08] pt-4">
-            <a
-              href="#login"
+            <Link
+              to="/login"
               onClick={() => setMenuOpen(false)}
               className="w-full rounded-full border border-white/20 px-5 py-2.5 text-center font-body text-sm text-white/85 transition-colors hover:border-white/40 hover:bg-white/5"
             >
               Login
-            </a>
-            <a
-              href="#get-started"
+            </Link>
+            <Link
+              to="/signup"
               onClick={() => setMenuOpen(false)}
               className="w-full rounded-full bg-emerald px-5 py-2.5 text-center font-body text-sm font-semibold text-charcoal transition-colors duration-300 hover:bg-emerald-dark"
             >
               Get Started
-            </a>
+            </Link>
           </div>
         </div>
       )}

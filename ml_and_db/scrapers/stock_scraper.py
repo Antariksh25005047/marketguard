@@ -1,5 +1,6 @@
 import yfinance as yf
 import pandas as pd
+import numpy as np
 from datetime import datetime
 
 import feedparser
@@ -252,6 +253,82 @@ def generate_spike_reason(change, volume, avg_volume, news_title):
         "reasons": reasons,
         "confidence": confidence
     }
+def fetch_technical_indicators(symbol: str):
+    """
+    Calculate real technical indicators using historical stock data.
+    """
+    try:
+        ticker = yf.Ticker(symbol)
+
+        hist = ticker.history(period="6mo", interval="1d")
+
+        if hist.empty or len(hist) < 50:
+            return None
+
+        hist = hist.dropna()
+
+        close = hist["Close"]
+
+        # EMA
+        ema20 = close.ewm(span=20, adjust=False).mean()
+        ema50 = close.ewm(span=50, adjust=False).mean()
+
+        # RSI (Part 1)
+        delta = close.diff()
+
+        gain = delta.where(delta > 0, 0)
+        loss = -delta.where(delta < 0, 0)
+
+        avg_gain = gain.rolling(14).mean()
+        avg_loss = loss.rolling(14).mean()
+
+        rs = avg_gain / avg_loss
+        rsi = 100 - (100 / (1 + rs))
+
+                # MACD
+        ema12 = close.ewm(span=12, adjust=False).mean()
+        ema26 = close.ewm(span=26, adjust=False).mean()
+
+        macd = ema12 - ema26
+        signal = macd.ewm(span=9, adjust=False).mean()
+
+        latest_macd = macd.iloc[-1]
+        latest_signal = signal.iloc[-1]
+
+        macd_status = "Bullish" if latest_macd > latest_signal else "Bearish"
+
+        # Support & Resistance
+        support = hist["Low"].tail(20).min()
+        resistance = hist["High"].tail(20).max()
+
+        # Trend
+        latest_close = close.iloc[-1]
+
+        if latest_close > ema20.iloc[-1] > ema50.iloc[-1]:
+            trend = "Strong Bullish"
+        elif latest_close > ema20.iloc[-1]:
+            trend = "Bullish"
+        elif latest_close < ema20.iloc[-1] < ema50.iloc[-1]:
+            trend = "Strong Bearish"
+        else:
+            trend = "Neutral"
+
+        latest_volume = int(hist["Volume"].iloc[-1])
+
+        return {
+            "rsi": round(float(rsi.iloc[-1]), 2),
+            "ema20": round(float(ema20.iloc[-1]), 2),
+            "ema50": round(float(ema50.iloc[-1]), 2),
+            "macd": macd_status,
+            "support": round(float(support), 2),
+            "resistance": round(float(resistance), 2),
+            "volume": latest_volume,
+            "trend": trend,
+        }
+
+    except Exception as e:
+        print(f"Error fetching technical indicators: {e}")
+        return None
     
 def fetch_market_movers():
     movers = []
