@@ -26,10 +26,10 @@ import StockHeader from "../components/stockAnalysis/StockHeader";
 import StockChart from "../components/stockAnalysis/StockChart";
 import PeekAndDip from "../components/stockAnalysis/PeekAndDip"
 import AiAnalysisCard from "../components/stockAnalysis/AiAnalysisCard";
+import AiPrediction from "../components/StockAnalysis/AiPrediction";
 import Technical from "../components/stockAnalysis/Technical";
 import FinancialMetrics from "../components/stockAnalysis/MetricsIndicator";
 // import SimilarStocks from "../components/StockAnalysis/SimilarStocks";
-// import AiPrediction from "../components/StockAnalysis/AiPrediction";
 import StockNews from "../components/stockAnalysis/StockNews";
 import News from "../components/stockAnalysis/News";
 
@@ -105,10 +105,14 @@ if (!stockData) {
           symbol={symbol}
           analysis={stockData.aiAnalysis}
       />
+      <AiPrediction
+        symbol={symbol}
+        analysis={stockData.aiAnalysis}
+        stock={stockData}
+      />
       <Technical />
       <FinancialMetrics stock={stockData} />
       {/* <SimilarStocks /> */}
-      {/* <AiPrediction /> */}
       <StockNews symbol={symbol} />
       <News currentStock={stockData} />
     </div>
