@@ -6,6 +6,7 @@ from ml_and_db.scrapers.stock_scraper import (
     fetch_stock_details,
     fetch_stock_history,
     fetch_market_movers,
+    fetch_market_overview,
     fetch_technical_indicators,
     STOCKS,
 )
@@ -343,6 +344,10 @@ def compare_stocks(stock1: str, stock2: str):
 @router.get("/movers")
 def get_market_movers():
     return fetch_market_movers()
+
+@router.get("/market-overview")
+def get_market_overview():
+    return fetch_market_overview()
 
 
 

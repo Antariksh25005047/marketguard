@@ -575,6 +575,7 @@ export default function MarketGuardLogin() {
     });
 
     const data = await response.json();
+    localStorage.setItem("user", JSON.stringify(data.user));
 
     if (response.ok) {
     localStorage.setItem("token", data.access_token);

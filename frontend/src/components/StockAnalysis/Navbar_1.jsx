@@ -24,6 +24,18 @@ const NAV_LINKS = [
 ];
 
 export default function Navbar() {
+
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  const userName = user.name || "MarketGuard User";
+
+  const initials = userName
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .substring(0, 2)
+    .toUpperCase();
+
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -334,9 +346,11 @@ export default function Navbar() {
               onClick={() => setProfileOpen((v) => !v)}
               aria-expanded={profileOpen}
             >
-              <div className="mg-avatar">AG</div>
+              <div className="mg-avatar">{initials}</div>
               <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
-                <span className="mg-profile-name">Anuj Guptar</span>
+                <span className="mg-profile-name">
+                  {userName}
+                </span>
                 <span className="mg-profile-role">MarketGuard User</span>
               </div>
               <ChevronDown

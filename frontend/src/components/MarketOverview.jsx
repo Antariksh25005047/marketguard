@@ -1,41 +1,54 @@
 import { motion } from "framer-motion";
-const INDICES = [
-  {
-    symbol: 'NIFTY 50',
-    exchange: 'NSE · India',
-    value: '24,013.10',
-    change: '-0.64%',
-    delta: '-155.00',
-    positive: false,
-  },
-  {
-    symbol: 'SENSEX',
-    exchange: 'BSE · India',
-    value: '76,802.90',
-    change: '-0.78%',
-    delta: '-608.00',
-    positive: false,
-  },
-  {
-    symbol: 'NASDAQ',
-    exchange: 'Composite · US',
-    value: '26,830.96',
-    change: '-0.09%',
-    delta: '-24.18',
-    positive: false,
-  },
-  {
-    symbol: 'S&P 500',
-    exchange: 'SPX · US',
-    value: '7,584.31',
-    change: '+0.41%',
-    delta: '+31.05',
-    positive: true,
-  },
-]
+import { useEffect, useState } from "react";
+// const INDICES = [
+//   {
+//     symbol: 'NIFTY 50',
+//     exchange: 'NSE · India',
+//     value: '24,013.10',
+//     change: '-0.64%',
+//     delta: '-155.00',
+//     positive: false,
+//   },
+//   {
+//     symbol: 'SENSEX',
+//     exchange: 'BSE · India',
+//     value: '76,802.90',
+//     change: '-0.78%',
+//     delta: '-608.00',
+//     positive: false,
+//   },
+//   {
+//     symbol: 'NASDAQ',
+//     exchange: 'Composite · US',
+//     value: '26,830.96',
+//     change: '-0.09%',
+//     delta: '-24.18',
+//     positive: false,
+//   },
+//   {
+//     symbol: 'S&P 500',
+//     exchange: 'SPX · US',
+//     value: '7,584.31',
+//     change: '+0.41%',
+//     delta: '+31.05',
+//     positive: true,
+//   },
+// ]
 
 function IndexCard({ index }) {
-  const { symbol, exchange, value, change, delta, positive } = index
+  const symbol = index.symbol;
+
+const exchange = index.exchange;
+
+const value = Number(index.value).toLocaleString();
+
+const change =
+  `${index.change > 0 ? "+" : ""}${Number(index.change).toFixed(2)}%`;
+
+const delta =
+  `${index.delta > 0 ? "+" : ""}${Number(index.delta).toFixed(2)}`;
+
+const positive = index.change >= 0;
 
   return (
     <div className="group relative overflow-hidden rounded-lg border border-white/[0.08] bg-white/[0.03] p-10 min-h-[200px] backdrop-blur-xl transition-all duration-300 ease-out hover:-translate-y-1.5 hover:scale-[1.02] hover:border-white/[0.16] hover:bg-white/[0.05] hover:shadow-[0_20px_50px_rgba(0,0,0,0.45)]">
@@ -81,6 +94,25 @@ function IndexCard({ index }) {
 }
 
 export default function MarketOverview() {
+  const [indices, setIndices] = useState([]);
+
+useEffect(() => {
+  async function fetchMarketOverview() {
+    try {
+      const res = await fetch(
+        "http://127.0.0.1:8000/api/stocks/market-overview"
+      );
+
+      const data = await res.json();
+
+      setIndices(data);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  fetchMarketOverview();
+}, []);
   return (
     <section className="relative w-full bg-charcoal px-6 py-24 md:px-10">
       <div className="mx-auto max-w-6xl">
@@ -98,7 +130,7 @@ export default function MarketOverview() {
         </div>
 
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-  {INDICES.map((index, i) => (
+  {indices.map((index, i) => (
     <motion.div
   key={index.symbol}
   initial={{

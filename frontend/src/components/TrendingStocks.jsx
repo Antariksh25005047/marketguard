@@ -1,38 +1,39 @@
 import { motion } from "framer-motion";
-const STOCKS = [
-  {
-    symbol: 'NVDA',
-    name: 'NVIDIA Corporation',
-    price: '$142.87',
-    change: '+4.32%',
-    positive: true,
-    points: [22, 26, 24, 30, 28, 36, 34, 42, 40, 48],
-  },
-  {
-    symbol: 'AAPL',
-    name: 'Apple Inc.',
-    price: '$211.05',
-    change: '+1.18%',
-    positive: true,
-    points: [30, 32, 29, 33, 31, 35, 33, 37, 36, 39],
-  },
-  {
-    symbol: 'TSLA',
-    name: 'Tesla, Inc.',
-    price: '$256.40',
-    change: '-2.64%',
-    positive: false,
-    points: [40, 37, 39, 33, 35, 29, 31, 25, 27, 21],
-  },
-  {
-    symbol: 'MSFT',
-    name: 'Microsoft Corp.',
-    price: '$487.92',
-    change: '+0.74%',
-    positive: true,
-    points: [28, 30, 28, 31, 30, 33, 31, 34, 33, 36],
-  },
-]
+import { useEffect, useState } from "react";
+// const STOCKS = [
+//   {
+//     symbol: 'NVDA',
+//     name: 'NVIDIA Corporation',
+//     price: '$142.87',
+//     change: '+4.32%',
+//     positive: true,
+//     points: [22, 26, 24, 30, 28, 36, 34, 42, 40, 48],
+//   },
+//   {
+//     symbol: 'AAPL',
+//     name: 'Apple Inc.',
+//     price: '$211.05',
+//     change: '+1.18%',
+//     positive: true,
+//     points: [30, 32, 29, 33, 31, 35, 33, 37, 36, 39],
+//   },
+//   {
+//     symbol: 'TSLA',
+//     name: 'Tesla, Inc.',
+//     price: '$256.40',
+//     change: '-2.64%',
+//     positive: false,
+//     points: [40, 37, 39, 33, 35, 29, 31, 25, 27, 21],
+//   },
+//   {
+//     symbol: 'MSFT',
+//     name: 'Microsoft Corp.',
+//     price: '$487.92',
+//     change: '+0.74%',
+//     positive: true,
+//     points: [28, 30, 28, 31, 30, 33, 31, 34, 33, 36],
+//   },
+// ]
 
 function Sparkline({ points, positive }) {
   const width = 160
@@ -89,7 +90,20 @@ function Sparkline({ points, positive }) {
 }
 
 function StockCard({ stock, index }) {
-  const { symbol, name, price, change, positive, points } = stock
+  const symbol = stock.symbol.replace(".NS", "");
+
+const name = stock.companyName;
+
+const price = `₹${stock.price}`;
+
+const change =
+  `${stock.change > 0 ? "+" : ""}${stock.change}%`;
+
+const positive = stock.change >= 0;
+
+const points = positive
+  ? [22,25,24,28,31,34,35,37,40,42]
+  : [42,40,38,35,34,31,28,25,23,20];
 
   return (
     <div
@@ -134,6 +148,35 @@ function StockCard({ stock, index }) {
 }
 
 export default function TrendingStocks() {
+
+  const [stocks, setStocks] = useState([]);
+
+  useEffect(() => {
+    async function fetchMovers() {
+      try {
+        const res = await fetch(
+          "http://127.0.0.1:8000/api/stocks/movers"
+        );
+
+        const data = await res.json();
+
+        const merged = [
+          ...data.gainers,
+          ...data.losers,
+        ];
+
+      merged.sort((a, b) => Math.abs(b.change) - Math.abs(a.change));
+
+      setStocks(merged.slice(0, 4));
+        console.log("Live Stocks:", merged);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    fetchMovers();
+  }, []);
+
   return (
     <section className="relative w-full bg-charcoal px-6 py-24 md:px-10">
       <div className="mx-auto max-w-6xl">
@@ -151,7 +194,7 @@ export default function TrendingStocks() {
         </div>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-  {STOCKS.map((stock, index) => (
+  {stocks.map((stock, index) => (
     <motion.div
       key={stock.symbol}
       initial={{

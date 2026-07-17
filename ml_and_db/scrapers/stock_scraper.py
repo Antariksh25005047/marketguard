@@ -58,6 +58,7 @@ def fetch_stock_details(symbol: str):
         ticker = yf.Ticker(symbol)
         info = ticker.info
 
+        # print(idx["symbol"], info.get("currentPrice"), info.get("previousClose"))
 
         current_price = info.get("currentPrice")
         previous_close = info.get("previousClose")
@@ -394,6 +395,53 @@ def fetch_market_movers():
         "gainers": gainers,
         "losers": losers
     }
+
+def fetch_market_overview():
+    indices = [
+        {"symbol": "^NSEI", "name": "NIFTY 50", "exchange": "NSE · India"},
+        {"symbol": "^BSESN", "name": "SENSEX", "exchange": "BSE · India"},
+        {"symbol": "^IXIC", "name": "NASDAQ", "exchange": "Composite · US"},
+        {"symbol": "^GSPC", "name": "S&P 500", "exchange": "SPX · US"},
+    ]
+
+    result = []
+
+    for idx in indices:
+        try:
+            ticker = yf.Ticker(idx["symbol"])
+
+            hist = ticker.history(period="5d", interval="1d")
+
+            print(idx["symbol"], len(hist))
+
+            if hist.empty:
+                continue
+
+            current = float(hist["Close"].iloc[-1])
+
+            if len(hist) >= 2:
+                previous = float(hist["Close"].iloc[-2])
+            else:
+                previous = current
+
+            if current is None or previous is None:
+                continue
+
+            change = round(((current - previous) / previous) * 100, 2)
+            delta = round(current - previous, 2)
+
+            result.append({
+                "symbol": idx["name"],
+                "exchange": idx["exchange"],
+                "value": round(current, 2),
+                "change": change,
+                "delta": delta,
+            })
+
+        except Exception as e:
+            print(e)
+
+    return result
 
 if __name__ == "__main__":
     print(" Fetching stock prices...\n")
