@@ -29,6 +29,7 @@ import SignupPage from "./pages/SignupPage";
 import Dashboard from "./pages/Dashboard";
 import StockAnalysis from "./pages/StockAnalysis";
 import ProfilePage from "./pages/Profilepage";
+import Report from "./pages/Report";
 // import Watchlist from "./pages/WatchList";
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard/>}/>
         <Route path="/stock-analysis/:symbol" element={<StockAnalysis />} />
         <Route path="/profile" element={<ProfilePage/>} />
+        <Route path="/report/:symbol" element={<Report />} />
         {/* <Route path="/watchlist" element={<Watchlist />} /> */}
       </Routes>
     </BrowserRouter>
