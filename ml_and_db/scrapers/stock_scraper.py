@@ -56,35 +56,63 @@ def fetch_all_stocks()-> list:
 
 def fetch_stock_details(symbol: str):
     try:
+
         ticker = yf.Ticker(symbol)
         info = ticker.info
+        print("Sector:", info.get("sector"))
+        print("Industry:", info.get("industry"))
+        print("City:", info.get("city"))
+        print("Country:", info.get("country"))
 
         # print(idx["symbol"], info.get("currentPrice"), info.get("previousClose"))
 
         current_price = info.get("currentPrice")
         previous_close = info.get("previousClose")
 
-        if current_price and previous_close:
-            change = round(
-                ((current_price - previous_close) / previous_close) * 100,
-                2
+        day_high = info.get("dayHigh")
+        day_low = info.get("dayLow")
+
+        hist_1mo = ticker.history(period="1mo")
+        hist_6mo = ticker.history(period="6mo")
+        hist_1y = ticker.history(period="1y")
+
+        one_month_return = None
+        six_month_return = None
+        one_year_return = None
+
+        if not hist_1mo.empty:
+            start = hist_1mo["Close"].iloc[0]
+            one_month_return = round(((current_price - start) / start) * 100, 2)
+
+        if not hist_6mo.empty:
+            start = hist_6mo["Close"].iloc[0]
+            six_month_return = round(((current_price - start) / start) * 100, 2)
+
+        if not hist_1y.empty:
+            start = hist_1y["Close"].iloc[0]
+            one_year_return = round(((current_price - start) / start) * 100, 2)
+
+            if current_price and previous_close:
+                change = round(
+                    ((current_price - previous_close) / previous_close) * 100,
+                    2
+                )
+            else:
+                change = 0
+
+            volume = info.get("volume")
+            avg_volume = info.get("averageVolume")
+
+            # news = fetch_stock_news(info.get("longName", symbol))
+
+            news = fetch_stock_news(info.get("longName", symbol))
+            
+            analysis = generate_spike_reason(
+                change,
+                volume,
+                avg_volume,
+                news["reason"]
             )
-        else:
-            change = 0
-
-        volume = info.get("volume")
-        avg_volume = info.get("averageVolume")
-
-        # news = fetch_stock_news(info.get("longName", symbol))
-
-        news = fetch_stock_news(info.get("longName", symbol))
-        
-        analysis = generate_spike_reason(
-            change,
-            volume,
-            avg_volume,
-            news["reason"]
-        )
 
         return {
             "symbol": symbol,
@@ -92,13 +120,25 @@ def fetch_stock_details(symbol: str):
             "price": info.get("currentPrice"),
             "currency": info.get("currency"),      # <-- ADD THIS
             "previousClose": info.get("previousClose"),
+            "dayHigh": day_high,
+            "dayLow": day_low,
             "marketCap": info.get("marketCap"),
+            "sector": info.get("sector"),
+            "industry": info.get("industry"),
+            "headquarters": f"{info.get('city', '')}, {info.get('country', '')}".strip(", "),
+            "website": info.get("website"),
             "volume": info.get("volume"),
             "high52w": info.get("fiftyTwoWeekHigh"),
             "low52w": info.get("fiftyTwoWeekLow"),
+            "oneMonthReturn": one_month_return,
+            "sixMonthReturn": six_month_return,
+            "oneYearReturn": one_year_return,
+
+            "peRatio": info.get("trailingPE"),
             "peRatio": info.get("trailingPE"),
             "eps": info.get("trailingEps"),
             "beta": info.get("beta"),
+
             "spikeAnalysis": {
                 "direction": "High Spike" if change > 0 else "High Dip",
                 "confidence": analysis["confidence"],

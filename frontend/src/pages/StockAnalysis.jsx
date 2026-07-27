@@ -65,6 +65,8 @@ const addToWatchlist = async () => {
       }
     );
 
+    
+
     const data = await res.json();
 
     alert(data.message);
@@ -74,6 +76,14 @@ const addToWatchlist = async () => {
   } catch (err) {
     console.error(err);
   }
+};
+
+const generateReport = () => {
+  navigate(`/report/${symbol}`, {
+    state: {
+      stock: stockData,
+    },
+  });
 };
 if (!stockData) {
   return (
@@ -114,7 +124,10 @@ if (!stockData) {
       <FinancialMetrics stock={stockData} />
       {/* <SimilarStocks /> */}
       <StockNews symbol={symbol} />
-      <News currentStock={stockData} />
+      <News
+        currentStock={stockData}
+        onGenerateReport={generateReport}
+      />
     </div>
   );
 }

@@ -69,42 +69,49 @@ const getTrendIcon = (value) => {
 
 const PriceAnalysis = ({ stock }) => {
   const {
-    current_price,
-    previous_close,
-    today_change,
-    today_change_percent,
-    day_high,
-    day_low,
-    week52_high,
-    week52_low,
-    one_month_return,
-    six_month_return,
-    one_year_return,
-  } = stock || {};
+  price,
+  previousClose,
+  dayHigh,
+  dayLow,
+  high52w,
+  low52w,
+  oneMonthReturn,
+  sixMonthReturn,
+  oneYearReturn,
+} = stock || {};
+const todayChange =
+  price && previousClose
+    ? price - previousClose
+    : 0;
 
-  const ChangeTrendIcon = getTrendIcon(today_change);
-  const changeTone = getToneClass(today_change);
+const todayChangePercent =
+  price && previousClose
+    ? ((price - previousClose) / previousClose) * 100
+    : 0;
+
+  const ChangeTrendIcon = getTrendIcon(todayChange);
+  const changeTone = getToneClass(todayChange);
 
   const rangeFields = [
-    { icon: ArrowUpToLine, label: "Day High", value: formatCurrency(day_high) },
-    { icon: ArrowDownToLine, label: "Day Low", value: formatCurrency(day_low) },
-    {
-      icon: CalendarRange,
-      label: "52 Week High",
-      value: formatCurrency(week52_high),
-    },
-    {
-      icon: CalendarRange,
-      label: "52 Week Low",
-      value: formatCurrency(week52_low),
-    },
-  ];
+  { icon: ArrowUpToLine, label: "Day High", value: formatCurrency(dayHigh) },
+  { icon: ArrowDownToLine, label: "Day Low", value: formatCurrency(dayLow) },
+  {
+    icon: CalendarRange,
+    label: "52 Week High",
+    value: formatCurrency(high52w),
+  },
+  {
+    icon: CalendarRange,
+    label: "52 Week Low",
+    value: formatCurrency(low52w),
+  },
+];
 
   const performanceFields = [
-    { label: "1 Month Return", value: one_month_return },
-    { label: "6 Month Return", value: six_month_return },
-    { label: "1 Year Return", value: one_year_return },
-  ];
+  { label: "1 Month Return", value: oneMonthReturn },
+  { label: "6 Month Return", value: sixMonthReturn },
+  { label: "1 Year Return", value: oneYearReturn },
+];
 
   return (
     <section className="w-full rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -124,17 +131,17 @@ const PriceAnalysis = ({ stock }) => {
               </span>
             </div>
             <p className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-              {formatCurrency(current_price)}
+              {formatCurrency(price)}
             </p>
           </div>
 
           <div className={`flex items-center gap-2 ${changeTone}`}>
             <ChangeTrendIcon className="h-5 w-5" strokeWidth={2.25} />
             <span className="text-base font-bold sm:text-lg">
-              {formatSignedCurrency(today_change)}
+              {formatSignedCurrency(todayChange)}
             </span>
             <span className="text-base font-bold sm:text-lg">
-              ({formatPercent(today_change_percent)})
+              ({formatPercent(todayChangePercent)})
             </span>
           </div>
         </div>
@@ -145,7 +152,7 @@ const PriceAnalysis = ({ stock }) => {
             Previous Close
           </span>
           <span className="text-sm font-bold text-slate-900">
-            {formatCurrency(previous_close)}
+            {formatCurrency(previousClose)}
           </span>
         </div>
       </div>

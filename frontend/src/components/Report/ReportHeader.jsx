@@ -19,8 +19,8 @@ import {
  * @param {string} symbol - Stock ticker symbol, e.g. "TCS"
  */
 const ReportHeader = ({ stock, symbol }) => {
-  const companyName = stock?.company_name || "Unknown Company";
-  const tickerSymbol = symbol || "N/A";
+  const companyName = stock?.companyName || "Unknown Company";
+  const tickerSymbol = stock?.symbol || symbol || "N/A";
 
   const now = useMemo(() => new Date(), []);
 

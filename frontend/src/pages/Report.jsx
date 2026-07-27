@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useParams } from "react-router-dom";
 import ReportHeader from "../components/Report/ReportHeader";
 import CompanyOverview from "../components/Report/CompanyOverview";
@@ -8,16 +9,41 @@ import TechnicalAnalysis from "../components/Report/TechnicalAnalysis";
 import FinancialAnalysis from "../components/Report/FinancialAnalysis";
 import NewsSummary from "../components/Report/NewsSummary";
 import InvestmentInsights from "../components/Report/InvestmentInsights";
+import FinalVerdict from "../components/Report/FinalVerdict";
+import Disclaimer from "../components/Report/Disclaimer";
 
 const Report = () => {
-  const { symbol } = useParams();
 
-  // Temporary dummy data
-  const stockData = {
-    company_name: "Tata Consultancy Services",
-    symbol,
-    current_price: 4032.45,
+const { symbol } = useParams();
+
+const [stockData, setStockData] = useState(null);
+
+useEffect(() => {
+  const fetchDetails = async () => {
+    try {
+      const res = await axios.get(
+        `http://127.0.0.1:8000/api/stocks/${symbol}/details`
+      );
+
+      console.log(res.data);
+      setStockData(res.data);
+    } catch (err) {
+      console.error(err);
+    }
   };
+
+  fetchDetails();
+}, [symbol]);
+
+console.log("Stock Data:", stockData);
+
+if (!stockData) {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <h2>Loading Report...</h2>
+    </div>
+  );
+}
 
   return (
     <div className="min-h-screen bg-slate-100 py-8">
@@ -34,17 +60,7 @@ const Report = () => {
 
   {/* Left Column */}
   <div className="space-y-6">
-    <CompanyOverview
-      stock={{
-        company_name: "Tata Consultancy Services",
-        symbol,
-        sector: "Information Technology",
-        industry: "IT Services & Consulting",
-        founded: "1968",
-        headquarters: "Mumbai, India",
-        market_cap: "₹15.2T",
-      }}
-    />
+    <CompanyOverview stock={stockData} />
 
     <AIRecommendation
       stock={{
@@ -140,21 +156,7 @@ const Report = () => {
 
   {/* Right Column */}
   <div className="space-y-6">
-    <PriceAnalysis
-      stock={{
-        current_price: 4032.45,
-        previous_close: 3998.20,
-        today_change: 34.25,
-        today_change_percent: 0.86,
-        day_high: 4050,
-        day_low: 3980,
-        week52_high: 4592,
-        week52_low: 3056,
-        one_month_return: 4.2,
-        six_month_return: 12.8,
-        one_year_return: 18.6,
-      }}
-    />
+    <PriceAnalysis stock={stockData} />
     
     <FinancialAnalysis
       stock={{
@@ -200,8 +202,32 @@ const Report = () => {
     {/* FinancialAnalysis baad me yahan add hoga */}
   </div>
 
-  
 
+</div>
+
+{/* Full Width Final Verdict */}
+<div className="mt-6">
+  <FinalVerdict
+    stock={{
+      recommendation: "Strong Buy",
+      target_price: 4550,
+      upside_percent: 12.8,
+      confidence: 92,
+      risk_level: "Low",
+      investment_horizon: "Long Term",
+      investment_score: 88,
+      key_reasons: [
+        "Strong earnings growth",
+        "Positive technical momentum",
+        "Healthy balance sheet",
+        "Bullish news sentiment",
+        "Strong institutional ownership",
+      ],
+      final_summary:
+        "Based on technical indicators, financial performance, valuation metrics and recent market sentiment, the stock appears fundamentally strong with favorable long-term growth prospects. Long-term investors may consider gradual accumulation while monitoring valuation levels and macroeconomic risks.",
+    }}
+  />
+  <Disclaimer />
 </div>
       </div>
     </div>

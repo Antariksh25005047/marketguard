@@ -281,7 +281,10 @@ function StockCard({ stock, align = "left", animate }) {
  
 // ─── Main Component ────────────────────────────────────────────────────────────
  
-export default function AIStockComparison({ currentStock }) {
+export default function AIStockComparison({
+  currentStock,
+  onGenerateReport,
+}) {
   // const [baseStock, setBaseStock] = useState(null);
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -633,6 +636,29 @@ setCompData(data);
                     </button>
                   ) : null;
                 })} */}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  padding: "0 0 20px",
+                }}
+              >
+                <button
+                  onClick={onGenerateReport}
+                  style={{
+                    padding: "11px 20px",
+                    borderRadius: 12,
+                    border: "none",
+                    background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
+                    color: "#fff",
+                    fontSize: 13,
+                    fontWeight: 700,
+                    cursor: "pointer",
+                  }}
+                >
+                  📄 Generate Report
+                </button>
               </div>
             </div>
           )}

@@ -25,16 +25,24 @@ import {
  */
 const CompanyOverview = ({ stock }) => {
   const {
-    company_name = "N/A",
-    symbol = "N/A",
-    current_price = "N/A",
-    sector = "N/A",
-    industry = "N/A",
-    market_cap = "N/A",
-    founded = "N/A",
-    headquarters = "N/A",
-    logo_text = "",
-  } = stock || {};
+  companyName = "N/A",
+  symbol = "N/A",
+  price = "N/A",
+  sector = "N/A",
+  industry = "N/A",
+  marketCap = "N/A",
+  founded = "N/A",
+  headquarters = "N/A",
+  logoText = "",
+} = stock || {};
+
+const formattedMarketCap =
+  typeof marketCap === "number"
+    ? new Intl.NumberFormat("en-IN", {
+        notation: "compact",
+        maximumFractionDigits: 2,
+      }).format(marketCap)
+    : marketCap;
 
   // Neutral slate icon treatment for all standard fields — a single
   // restrained tone rather than a different color per row.
@@ -42,7 +50,7 @@ const CompanyOverview = ({ stock }) => {
     { icon: Tag, label: "Stock Symbol", value: symbol },
     { icon: Briefcase, label: "Sector", value: sector },
     { icon: Factory, label: "Industry", value: industry },
-    { icon: Landmark, label: "Market Cap", value: market_cap },
+    { icon: Landmark, label: "Market Cap", value: formattedMarketCap },
     { icon: CalendarClock, label: "Founded", value: founded },
     { icon: MapPin, label: "Headquarters", value: headquarters },
   ];
@@ -57,16 +65,16 @@ const CompanyOverview = ({ stock }) => {
       {/* ===================== LOGO + NAME ===================== */}
       <div className="mb-5 flex items-center gap-4 border-b border-slate-100 pb-5">
         <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50">
-          {logo_text ? (
+          {logoText ? (
             <span className="text-2xl font-extrabold italic tracking-tight text-blue-700">
-              {logo_text}
+              {logoText}
             </span>
           ) : (
             <Building2 className="h-10 w-10 text-slate-400" strokeWidth={1.75} />
           )}
         </div>
         <h2 className="text-lg font-extrabold leading-tight tracking-tight text-slate-900 sm:text-xl">
-          {company_name}
+          {companyName}
         </h2>
       </div>
 
@@ -79,7 +87,7 @@ const CompanyOverview = ({ stock }) => {
           </span>
         </dt>
         <dd className="text-xl font-extrabold text-emerald-600 sm:text-2xl">
-          {current_price}
+          ₹{price}
         </dd>
       </div>
 
