@@ -1,3 +1,4 @@
+import StockChart from "../StockAnalysis/StockChart";
 import React from "react";
 import {
   IndianRupee,
@@ -8,7 +9,6 @@ import {
   ArrowUpToLine,
   ArrowDownToLine,
   CalendarRange,
-  LineChart,
 } from "lucide-react";
 
 /**
@@ -213,15 +213,12 @@ const todayChangePercent =
         <h4 className="mb-4 text-xs font-bold uppercase tracking-wide text-slate-500">
           Price Chart
         </h4>
-        <div className="flex h-64 w-full flex-col items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50">
-          <LineChart className="mb-3 h-8 w-8 text-slate-300" strokeWidth={1.5} />
-          <p className="text-sm font-semibold text-slate-500">
-            Stock Price Chart
-          </p>
-          <p className="mt-1 text-xs text-slate-400">
-            TradingView Chart will be integrated
-          </p>
-        </div>
+        <StockChart
+        symbol={stock.symbol}
+        basePrice={price}
+        spikeAnalysis={stock.spikeAnalysis}
+        height={130}
+        />
       </div>
     </section>
   );

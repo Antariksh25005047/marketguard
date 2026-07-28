@@ -24,23 +24,15 @@ import {
 
 // ---------- recommendation styling ----------
 const RECOMMENDATION_STYLES = {
-  "Strong Buy": {
+  BUY: {
     badge: "bg-emerald-50 text-emerald-700 ring-emerald-200",
     icon: TrendingUp,
   },
-  Buy: {
-    badge: "bg-green-50 text-green-700 ring-green-200",
-    icon: TrendingUp,
-  },
-  Hold: {
+  HOLD: {
     badge: "bg-yellow-50 text-yellow-700 ring-yellow-200",
     icon: Minus,
   },
-  Sell: {
-    badge: "bg-orange-50 text-orange-700 ring-orange-200",
-    icon: TrendingDown,
-  },
-  "Strong Sell": {
+  SELL: {
     badge: "bg-red-50 text-red-700 ring-red-200",
     icon: TrendingDown,
   },
@@ -86,20 +78,28 @@ const getReasoningPoints = (ai_summary) => {
 };
 
 const AIRecommendation = ({ stock }) => {
+  const ai = stock?.aiAnalysis || {};
+
   const {
-    recommendation = "Hold",
-    confidence,
-    target_price,
-    upside_percent,
-    risk_level = "Medium",
-    ai_summary,
-  } = stock || {};
+   recommendation = "HOLD",
+   aiScore,
+   targetPrice,
+   currentPrice,
+   risk = "Medium",
+   summary = [],
+  } = ai;
+  const upsidePercent =
+    currentPrice && targetPrice
+      ? ((targetPrice - currentPrice) / currentPrice) * 100
+      : 0;
 
   const recStyle =
-    RECOMMENDATION_STYLES[recommendation] || RECOMMENDATION_STYLES.Hold;
+    RECOMMENDATION_STYLES[recommendation] || RECOMMENDATION_STYLES.HOLD;
   const RecIcon = recStyle.icon;
-  const riskStyle = RISK_STYLES[risk_level] || RISK_STYLES.Medium;
-  const reasoningPoints = getReasoningPoints(ai_summary);
+  const riskStyle = RISK_STYLES[risk] || RISK_STYLES.Medium;
+  const reasoningPoints = Array.isArray(summary)
+  ? summary
+  : getReasoningPoints(summary);
 
   return (
     <section className="flex h-full max-h-[320px] min-h-[280px] w-full flex-col rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -126,9 +126,7 @@ const AIRecommendation = ({ stock }) => {
             </span>
           </div>
           <p className="text-sm font-extrabold text-slate-900">
-            {confidence !== undefined && confidence !== null
-              ? `${confidence}%`
-              : "N/A"}
+            {aiScore !== undefined ? `${aiScore}%` : "N/A"}
           </p>
         </div>
 
@@ -140,7 +138,7 @@ const AIRecommendation = ({ stock }) => {
             </span>
           </div>
           <p className="text-sm font-extrabold text-slate-900">
-            {formatCurrency(target_price)}
+            {formatCurrency(targetPrice)}
           </p>
         </div>
 
@@ -152,7 +150,7 @@ const AIRecommendation = ({ stock }) => {
             </span>
           </div>
           <p className="text-sm font-extrabold text-emerald-600">
-            {formatPercent(upside_percent)}
+            {formatPercent(upsidePercent)}
           </p>
         </div>
       </div>
@@ -166,7 +164,7 @@ const AIRecommendation = ({ stock }) => {
         <span
           className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ring-1 ring-inset ${riskStyle}`}
         >
-          {risk_level}
+          {risk}
         </span>
       </div>
 

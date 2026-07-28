@@ -138,7 +138,12 @@ const CustomActiveDot = ({ cx, cy }) => (
 );
 
 // ─── Main Component ──────────────────────────────────────────────────────────
-export default function StockChart({ symbol = "TSLA", basePrice = 256.4, spikeAnalysis,}) {
+export default function StockChart({
+  symbol = "TSLA",
+  basePrice = 256.4,
+  spikeAnalysis,
+  height = 130,
+}) {
   console.log("Spike Analysis:", spikeAnalysis);
   const [loading, setLoading] = useState(true);
   const [chartData, setChartData] = useState([]);
@@ -474,7 +479,7 @@ const formatted = data.map((item) => ({
 
         {/* ── Chart ── */}
         <div className={`mg-chart-wrap${isTransitioning ? " transitioning" : ""}`}>
-          <ResponsiveContainer width="100%" height={480}>
+          <ResponsiveContainer width="100%" height={height}>
             <AreaChart
               // key={animationKey}
               data={chartData}
