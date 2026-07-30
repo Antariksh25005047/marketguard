@@ -31,112 +31,112 @@ def seed_stocks():
     finally:
         session.close()
 
-def generate_ai_analysis(data):
-    score = 0
-    summary = []
+# def generate_ai_analysis(data):
+#     score = 0
+#     summary = []
 
-    pe = data.get("peRatio")
-    eps = data.get("eps")
-    beta = data.get("beta")
-    market_cap = data.get("marketCap")
-    current_price = data.get("price") or 0
+#     pe = data.get("peRatio")
+#     eps = data.get("eps")
+#     beta = data.get("beta")
+#     market_cap = data.get("marketCap")
+#     current_price = data.get("price") or 0
 
-    # PE Ratio
-    if pe:
-        if pe < 20:
-            score += 2
-            summary.append("Healthy P/E Ratio indicates attractive valuation.")
-        elif pe < 35:
-            score += 1
-            summary.append("Fair valuation compared to peers.")
-        else:
-            summary.append("Stock appears relatively expensive.")
+#     # PE Ratio
+#     if pe:
+#         if pe < 20:
+#             score += 2
+#             summary.append("Healthy P/E Ratio indicates attractive valuation.")
+#         elif pe < 35:
+#             score += 1
+#             summary.append("Fair valuation compared to peers.")
+#         else:
+#             summary.append("Stock appears relatively expensive.")
 
-    # EPS
-    if eps:
-        if eps > 0:
-            score += 2
-            summary.append("Positive earnings per share.")
-        else:
-            summary.append("Negative EPS is a concern.")
+#     # EPS
+#     if eps:
+#         if eps > 0:
+#             score += 2
+#             summary.append("Positive earnings per share.")
+#         else:
+#             summary.append("Negative EPS is a concern.")
 
-    # Market Cap
-    if market_cap:
-        if market_cap > 1_000_000_000_000:
-            score += 2
-            summary.append("Large-cap company with stable business.")
-        else:
-            score += 1
-            summary.append("Mid/Small-cap company.")
+#     # Market Cap
+#     if market_cap:
+#         if market_cap > 1_000_000_000_000:
+#             score += 2
+#             summary.append("Large-cap company with stable business.")
+#         else:
+#             score += 1
+#             summary.append("Mid/Small-cap company.")
 
-    # Beta & Risk
-    if beta:
-        if beta < 1:
-            score += 2
-            risk = "Low"
-        elif beta < 1.5:
-            score += 1
-            risk = "Medium"
-        else:
-            risk = "High"
-    else:
-        risk = "Medium"
+#     # Beta & Risk
+#     if beta:
+#         if beta < 1:
+#             score += 2
+#             risk = "Low"
+#         elif beta < 1.5:
+#             score += 1
+#             risk = "Medium"
+#         else:
+#             risk = "High"
+#     else:
+#         risk = "Medium"
 
-    # Recommendation
-    # AI Score (0-100)
-    aiScore = round((score / 8) * 100)
-    aiScore = max(35, min(aiScore, 95))
+#     # Recommendation
+#     # AI Score (0-100)
+#     aiScore = round((score / 8) * 100)
+#     aiScore = max(35, min(aiScore, 95))
 
-    if aiScore >= 80:
-        recommendation = "BUY"
-    elif aiScore >= 60:
-        recommendation = "HOLD"
-    else:
-        recommendation = "SELL"
+#     if aiScore >= 80:
+#         recommendation = "BUY"
+#     elif aiScore >= 60:
+#         recommendation = "HOLD"
+#     else:
+#         recommendation = "SELL"
 
-    # Target Price
-    if recommendation == "BUY":
-        target = current_price * 1.12
-    elif recommendation == "HOLD":
-        target = current_price * 1.03
-    else:
-        target = current_price * 0.90
+#     # Target Price
+#     if recommendation == "BUY":
+#         target = current_price * 1.12
+#     elif recommendation == "HOLD":
+#         target = current_price * 1.03
+#     else:
+#         target = current_price * 0.90
 
-    # Colors
-    if recommendation == "BUY":
-        color = "#22C55E"
-        colorDim = "rgba(34,197,94,0.15)"
-        colorBorder = "rgba(34,197,94,0.35)"
-        glow = "rgba(34,197,94,0.40)"
+#     # Colors
+#     if recommendation == "BUY":
+#         color = "#22C55E"
+#         colorDim = "rgba(34,197,94,0.15)"
+#         colorBorder = "rgba(34,197,94,0.35)"
+#         glow = "rgba(34,197,94,0.40)"
 
-    elif recommendation == "HOLD":
-        color = "#FACC15"
-        colorDim = "rgba(250,204,21,0.15)"
-        colorBorder = "rgba(250,204,21,0.35)"
-        glow = "rgba(250,204,21,0.40)"
+#     elif recommendation == "HOLD":
+#         color = "#FACC15"
+#         colorDim = "rgba(250,204,21,0.15)"
+#         colorBorder = "rgba(250,204,21,0.35)"
+#         glow = "rgba(250,204,21,0.40)"
 
-    else:
-        color = "#EF4444"
-        colorDim = "rgba(239,68,68,0.15)"
-        colorBorder = "rgba(239,68,68,0.35)"
-        glow = "rgba(239,68,68,0.40)"
+#     else:
+#         color = "#EF4444"
+#         colorDim = "rgba(239,68,68,0.15)"
+#         colorBorder = "rgba(239,68,68,0.35)"
+#         glow = "rgba(239,68,68,0.40)"
 
-    return {
-        "recommendation": recommendation,
-        "aiScore": aiScore,
-        "risk": risk,
-        "summary": summary,
-        "reasoning": (
-            f"AI analyzed PE Ratio ({pe}), EPS ({eps}), "
-            f"Beta ({beta}) and Market Capitalization."
-        ),
-        "currentPrice": current_price,
-        "targetPrice": round(target, 2),
-        "color": color,
-        "colorDim": colorDim,
-        "colorBorder": colorBorder,
-        "glow": glow,
-    }
+#     return {
+#         "recommendation": recommendation,
+#         "aiScore": aiScore,
+#         "risk": risk,
+#         "summary": summary,
+#         "reasoning": (
+#             f"AI analyzed PE Ratio ({pe}), EPS ({eps}), "
+#             f"Beta ({beta}) and Market Capitalization."
+#         ),
+#         "currentPrice": current_price,
+#         "targetPrice": round(target, 2),
+#         "color": color,
+#         "colorDim": colorDim,
+#         "colorBorder": colorBorder,
+#         "glow": glow,
+#     }
 
 
 
@@ -197,7 +197,8 @@ def get_stock_details(symbol: str):
     if not data:
         raise HTTPException(status_code=404, detail="Stock not found")
 
-    data["aiAnalysis"] = generate_ai_analysis(data)
+    # data["aiAnalysis"] = generate_ai_analysis(data)
+    print(data["aiAnalysis"])
 
     return data
 

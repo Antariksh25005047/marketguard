@@ -70,40 +70,42 @@ const getHealthStatusStyle = (field, value) => {
 };
 
 const FinancialAnalysis = ({ stock }) => {
+  const financial = stock?.financialAnalysis || {};
+
   const {
-    market_cap,
+    marketCap,
     revenue,
-    net_profit,
+    netProfit,
     eps,
-    pe_ratio,
-    dividend_yield,
+    peRatio,
+    dividendYield,
     roe,
     roce,
-    promoter_holding,
-    institutional_holding,
-    revenue_growth,
+    promoterHolding,
+    institutionalHolding,
+    revenueGrowth,
     profitability,
-    debt_level,
-    financial_summary,
-  } = stock || {};
+    debtLevel,
+    summary,
+} = financial;
 
   // Metrics assembled from props for the 2-column grid.
   const metrics = [
-    { label: "Market Cap", value: formatValue(market_cap) },
-    { label: "Revenue", value: formatValue(revenue) },
-    { label: "Net Profit", value: formatValue(net_profit) },
-    { label: "EPS", value: formatValue(eps) },
-    { label: "P/E Ratio", value: formatValue(pe_ratio) },
-    { label: "Dividend Yield", value: formatPercent(dividend_yield) },
-    { label: "ROE", value: formatPercent(roe) },
-    { label: "ROCE", value: formatPercent(roce) },
-  ];
+  { label: "Market Cap", value: formatValue(marketCap) },
+  { label: "Revenue", value: formatValue(revenue) },
+  { label: "Net Profit", value: formatValue(netProfit) },
+  { label: "EPS", value: formatValue(eps) },
+  { label: "P/E Ratio", value: formatValue(peRatio) },
+  { label: "Dividend Yield", value: formatPercent(dividendYield) },
+  { label: "ROE", value: formatPercent(roe) },
+  { label: "ROCE", value: formatPercent(roce) },
+];
 
   // Financial-health status badges assembled from props.
   const healthStatuses = [
-    { field: "revenue_growth", label: "Revenue Growth", value: revenue_growth },
-    { field: "profitability", label: "Profitability", value: profitability },
-    { field: "debt_level", label: "Debt Level", value: debt_level },
+  { field: "revenue_growth", label: "Revenue Growth", value: revenueGrowth },
+  { field: "profitability", label: "Profitability", value: profitability },
+  { field: "debt_level", label: "Debt Level", value: debtLevel },
   ];
 
   return (
@@ -140,7 +142,7 @@ const FinancialAnalysis = ({ stock }) => {
             </span>
           </div>
           <p className="text-sm font-extrabold text-slate-900">
-            {formatPercent(promoter_holding)}
+            {formatPercent(promoterHolding)}
           </p>
         </div>
         <div className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-center">
@@ -151,7 +153,7 @@ const FinancialAnalysis = ({ stock }) => {
             </span>
           </div>
           <p className="text-sm font-extrabold text-slate-900">
-            {formatPercent(institutional_holding)}
+            {formatPercent(institutionalHolding)}
           </p>
         </div>
       </div>
@@ -192,7 +194,7 @@ const FinancialAnalysis = ({ stock }) => {
           </span>
         </div>
         <p className="text-[11px] leading-relaxed text-slate-600">
-          {financial_summary || "N/A"}
+          {summary || "N/A"}
         </p>
       </div>
     </section>

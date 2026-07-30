@@ -62,49 +62,9 @@ if (!stockData) {
   <div className="space-y-6">
     <CompanyOverview stock={stockData} />
 
-    <AIRecommendation
-      stock={{
-        recommendation: "Strong Buy",
-        confidence: 92,
-        target_price: 4550,
-        upside_percent: 12.8,
-        risk_level: "Low",
-        ai_summary: [
-          "Strong quarterly earnings growth",
-          "Positive technical momentum",
-          "Healthy balance sheet",
-          "Bullish news sentiment",
-        ],
-      }}
-    />
-    <TechnicalAnalysis
-      stock={{
-        trend: "Bullish",
-        rsi: 62,
-        rsi_interpretation: "Bullish",
-        macd: "Positive",
-        macd_interpretation: "Bullish",
-        dma50: 3950,
-        dma50_interpretation: "Bullish",
-        dma200: 3725,
-        dma200_interpretation: "Bullish",
-        volume_trend: "Above Avg",
-        volume_trend_interpretation: "Positive",
-        volatility: "Moderate",
-        volatility_interpretation: "Neutral",
-        support: 3950,
-        resistance: 4180,
-        signals: [
-          "Trading above 50 DMA",
-          "MACD crossover detected",
-          "RSI in bullish zone",
-          "Higher highs and higher lows",
-          "Volume confirms breakout",
-        ],
-        technical_view:
-          "The stock is trading in a confirmed uptrend with positive momentum across major indicators. Current technical structure supports continued bullish movement while maintaining moderate volatility.",
-      }}
-    />
+    <AIRecommendation stock={stockData} />
+
+    <TechnicalAnalysis stock={stockData} />
 
     <NewsSummary
               stock={{
@@ -158,25 +118,7 @@ if (!stockData) {
   <div className="space-y-6">
     <PriceAnalysis stock={stockData} />
     
-    <FinancialAnalysis
-      stock={{
-        market_cap: "₹15.2T",
-        revenue: "₹2.45T",
-        net_profit: "₹52,300Cr",
-        eps: "₹126.5",
-        pe_ratio: "31.8",
-        dividend_yield: 1.3,
-        roe: 48.2,
-        roce: 58.4,
-        promoter_holding: 72.35,
-        institutional_holding: 21.18,
-        revenue_growth: "Strong",
-        profitability: "Healthy",
-        debt_level: "Low",
-        financial_summary:
-          "The company maintains strong profitability, healthy return ratios and low debt. Consistent earnings growth and stable cash generation indicate solid long-term financial strength.",
-      }}
-    />
+    <FinancialAnalysis stock={stockData} />
 
     <InvestmentInsights
               stock={{

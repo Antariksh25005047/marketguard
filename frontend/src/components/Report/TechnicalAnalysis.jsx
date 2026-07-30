@@ -96,25 +96,57 @@ const getInterpretationStyle = (interpretation) => {
 };
 
 const TechnicalAnalysis = ({ stock }) => {
+  const technical = stock?.technical || {};
   const {
-    trend = "Neutral",
-    rsi,
-    rsi_interpretation,
-    macd,
-    macd_interpretation,
-    dma50,
-    dma50_interpretation,
-    dma200,
-    dma200_interpretation,
-    volume_trend,
-    volume_trend_interpretation,
-    volatility,
-    volatility_interpretation,
-    support,
-    resistance,
-    signals = [],
-    technical_view,
-  } = stock || {};
+  trend = "Neutral",
+  rsi,
+  macd,
+  ema20,
+  ema50,
+  support,
+  resistance,
+  volume,
+} = technical;
+
+const dma50 = ema20;
+const dma200 = ema50;
+
+const rsi_interpretation =
+  rsi > 70
+    ? "Bearish"
+    : rsi < 30
+    ? "Bullish"
+    : "Neutral";
+
+const macd_interpretation =
+  macd === "Bullish" ? "Bullish" : "Bearish";
+
+const dma50_interpretation =
+  trend.includes("Bullish") ? "Bullish" : "Bearish";
+
+const dma200_interpretation =
+  trend.includes("Bullish") ? "Bullish" : "Bearish";
+
+const volume_trend = volume?.toLocaleString("en-IN");
+
+const volume_trend_interpretation = "Positive";
+
+const volatility = "Moderate";
+
+const volatility_interpretation = "Neutral";
+
+const signals = [
+  `Trend is ${trend}`,
+  `RSI: ${rsi}`,
+  `MACD is ${macd}`,
+  `EMA20: ₹${ema20}`,
+  `EMA50: ₹${ema50}`,
+];
+
+const technical_view =
+  trend.includes("Bullish")
+    ? "Technical indicators suggest bullish momentum with positive price action."
+    : "Technical indicators suggest bearish momentum and investors should remain cautious.";
 
   const trendStyle = getTrendStyle(trend);
   const TrendIcon = trendStyle.icon;

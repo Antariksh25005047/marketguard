@@ -142,7 +142,7 @@ export default function StockChart({
   symbol = "TSLA",
   basePrice = 256.4,
   spikeAnalysis,
-  height = 130,
+  height = 500,
 }) {
   console.log("Spike Analysis:", spikeAnalysis);
   const [loading, setLoading] = useState(true);

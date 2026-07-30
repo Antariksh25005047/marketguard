@@ -56,22 +56,19 @@ def fetch_all_stocks()-> list:
 
 def fetch_stock_details(symbol: str):
     try:
-
         ticker = yf.Ticker(symbol)
         info = ticker.info
-        print("Sector:", info.get("sector"))
-        print("Industry:", info.get("industry"))
-        print("City:", info.get("city"))
-        print("Country:", info.get("country"))
-
-        # print(idx["symbol"], info.get("currentPrice"), info.get("previousClose"))
 
         current_price = info.get("currentPrice")
         previous_close = info.get("previousClose")
 
+        if current_price is None:
+            return None
+
         day_high = info.get("dayHigh")
         day_low = info.get("dayLow")
 
+        # History
         hist_1mo = ticker.history(period="1mo")
         hist_6mo = ticker.history(period="6mo")
         hist_1y = ticker.history(period="1y")
@@ -92,52 +89,70 @@ def fetch_stock_details(symbol: str):
             start = hist_1y["Close"].iloc[0]
             one_year_return = round(((current_price - start) / start) * 100, 2)
 
-            if current_price and previous_close:
-                change = round(
-                    ((current_price - previous_close) / previous_close) * 100,
-                    2
-                )
-            else:
-                change = 0
-
-            volume = info.get("volume")
-            avg_volume = info.get("averageVolume")
-
-            # news = fetch_stock_news(info.get("longName", symbol))
-
-            news = fetch_stock_news(info.get("longName", symbol))
-            
-            analysis = generate_spike_reason(
-                change,
-                volume,
-                avg_volume,
-                news["reason"]
+        change = 0
+        if current_price and previous_close:
+            change = round(
+                ((current_price - previous_close) / previous_close) * 100,
+                2
             )
 
-        return {
+        volume = info.get("volume")
+        avg_volume = info.get("averageVolume")
+
+        news = fetch_stock_news(info.get("longName", symbol))
+
+        analysis = generate_spike_reason(
+            change,
+            volume,
+            avg_volume,
+            news["reason"]
+        )
+
+        data = {
             "symbol": symbol,
             "companyName": info.get("longName"),
-            "price": info.get("currentPrice"),
-            "currency": info.get("currency"),      # <-- ADD THIS
-            "previousClose": info.get("previousClose"),
+            "price": current_price,
+            "currency": info.get("currency"),
+            "previousClose": previous_close,
             "dayHigh": day_high,
             "dayLow": day_low,
             "marketCap": info.get("marketCap"),
             "sector": info.get("sector"),
             "industry": info.get("industry"),
-            "headquarters": f"{info.get('city', '')}, {info.get('country', '')}".strip(", "),
+            "headquarters": f"{info.get('city','')}, {info.get('country','')}".strip(", "),
             "website": info.get("website"),
-            "volume": info.get("volume"),
+            "volume": volume,
             "high52w": info.get("fiftyTwoWeekHigh"),
             "low52w": info.get("fiftyTwoWeekLow"),
             "oneMonthReturn": one_month_return,
             "sixMonthReturn": six_month_return,
             "oneYearReturn": one_year_return,
-
-            "peRatio": info.get("trailingPE"),
             "peRatio": info.get("trailingPE"),
             "eps": info.get("trailingEps"),
             "beta": info.get("beta"),
+            # Financial Data
+            "revenue": info.get("totalRevenue"),
+            "netProfit": info.get("netIncomeToCommon"),
+            "dividendYield": (
+                round(info.get("dividendYield") * 100, 2)
+                if info.get("dividendYield") is not None
+                else None
+            ),
+            "roe": (
+                round(info.get("returnOnEquity") * 100, 2)
+                if info.get("returnOnEquity") is not None
+                else None
+            ),
+            "promoterHolding": (
+                round(info.get("heldPercentInsiders") * 100, 2)
+                if info.get("heldPercentInsiders") is not None
+                else None
+            ),
+            "institutionalHolding": (
+                round(info.get("heldPercentInstitutions") * 100, 2)
+                if info.get("heldPercentInstitutions") is not None
+                else None
+            ),
 
             "spikeAnalysis": {
                 "direction": "High Spike" if change > 0 else "High Dip",
@@ -146,12 +161,154 @@ def fetch_stock_details(symbol: str):
                 "headline": news["reason"],
                 "source": news["source"],
                 "url": news["url"],
-                },
-            }
+            },
+        }
+
+        technical = fetch_technical_indicators(symbol)
+        data["technical"] = technical
+
+        data["aiAnalysis"] = generate_ai_analysis(data)
+        data["financialAnalysis"] = generate_financial_analysis(data)
+
+        return data
 
     except Exception as e:
         print(f"Error fetching stock details: {e}")
         return None
+
+
+def generate_ai_analysis(data):
+    score = 50
+    summary = []
+
+    technical = data.get("technical", {})
+
+    rsi = technical.get("rsi")
+    trend = technical.get("trend")
+    macd = technical.get("macd")
+
+    # -------- RSI --------
+    if rsi is not None:
+        if rsi < 35:
+            score += 10
+            summary.append("RSI indicates the stock is oversold.")
+        elif rsi > 70:
+            score -= 10
+            summary.append("RSI indicates the stock is overbought.")
+
+    # -------- Trend --------
+    if trend:
+        if "Bullish" in trend:
+            score += 10
+            summary.append(f"Trend is {trend}.")
+        elif "Bearish" in trend:
+            score -= 10
+            summary.append(f"Trend is {trend}.")
+
+    # -------- MACD --------
+    if macd == "Bullish":
+        score += 8
+        summary.append("MACD shows bullish momentum.")
+    elif macd == "Bearish":
+        score -= 8
+        summary.append("MACD shows bearish momentum.")
+
+    # -------- Fundamentals --------
+    pe = data.get("peRatio")
+    if pe:
+        if pe < 25:
+            score += 8
+            summary.append("P/E ratio is attractive.")
+        elif pe > 45:
+            score -= 8
+            summary.append("P/E ratio is expensive.")
+
+    beta = data.get("beta")
+    if beta:
+        if beta < 1.2:
+            score += 5
+        elif beta > 2:
+            score -= 5
+            summary.append("High volatility detected.")
+
+    if data.get("oneYearReturn", 0) > 20:
+        score += 8
+        summary.append("Strong 1-year return.")
+
+    if data.get("oneMonthReturn", 0) < -10:
+        score -= 5
+        summary.append("Weak recent momentum.")
+
+    # -------- Final Score --------
+    score = max(0, min(score, 100))
+
+    if score >= 75:
+        recommendation = "BUY"
+        risk = "Low"
+        target = data["price"] * 1.12
+    elif score >= 55:
+        recommendation = "HOLD"
+        risk = "Medium"
+        target = data["price"] * 1.04
+    else:
+        recommendation = "SELL"
+        risk = "High"
+        target = data["price"] * 0.92
+
+    return {
+        "recommendation": recommendation,
+        "aiScore": score,
+        "risk": risk,
+        "currentPrice": data["price"],
+        "targetPrice": round(target, 2),
+        "summary": summary[:5]
+    }
+
+def generate_financial_analysis(data):
+    revenue_growth = "Moderate"
+    profitability = "Average"
+    debt_level = "Moderate"
+    summary = []
+
+    pe = data.get("peRatio")
+    roe = data.get("roe")
+
+    if pe:
+        if pe < 25:
+            summary.append("Company appears reasonably valued.")
+        elif pe > 45:
+            summary.append("Stock appears highly valued.")
+
+    if roe:
+        if roe >= 20:
+            profitability = "Healthy"
+            summary.append("Return on Equity is strong.")
+        elif roe >= 10:
+            profitability = "Average"
+        else:
+            profitability = "Poor"
+
+    if data.get("revenue"):
+        revenue_growth = "Strong"
+
+    debt_level = "Moderate"
+
+    return {
+    "marketCap": data.get("marketCap"),
+    "revenue": data.get("revenue"),
+    "netProfit": data.get("netProfit"),
+    "eps": data.get("eps"),
+    "peRatio": data.get("peRatio"),
+    "dividendYield": data.get("dividendYield"),
+    "roe": data.get("roe"),
+    "promoterHolding": data.get("promoterHolding"),
+    "institutionalHolding": data.get("institutionalHolding"),
+
+    "revenueGrowth": revenue_growth,
+    "profitability": profitability,
+    "debtLevel": debt_level,
+    "summary": " ".join(summary) if summary else "Financial indicators are neutral."
+    }
     
 def fetch_stock_history(symbol: str, period="6mo"):
     try:
