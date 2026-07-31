@@ -33,6 +33,7 @@ const CompanyOverview = ({ stock }) => {
   marketCap = "N/A",
   founded = "N/A",
   headquarters = "N/A",
+  logo="",
   logoText = "",
 } = stock || {};
 
@@ -64,14 +65,25 @@ const formattedMarketCap =
 
       {/* ===================== LOGO + NAME ===================== */}
       <div className="mb-5 flex items-center gap-4 border-b border-slate-100 pb-5">
-        <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50">
-          {logoText ? (
+        <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 overflow-hidden">
+
+        {logo ? (
+            <img
+            src={logo}
+            alt={companyName}
+            className="h-16 w-16 object-contain"
+            onError={(e) => {
+                e.target.style.display = "none";
+            }}
+            />
+        ) : logoText ? (
             <span className="text-2xl font-extrabold italic tracking-tight text-blue-700">
-              {logoText}
+            {logoText}
             </span>
-          ) : (
+        ) : (
             <Building2 className="h-10 w-10 text-slate-400" strokeWidth={1.75} />
-          )}
+        )}
+
         </div>
         <h2 className="text-lg font-extrabold leading-tight tracking-tight text-slate-900 sm:text-xl">
           {companyName}

@@ -66,50 +66,7 @@ if (!stockData) {
 
     <TechnicalAnalysis stock={stockData} />
 
-    <NewsSummary
-              stock={{
-                overall_sentiment: "Positive",
-                sentiment_confidence: 88,
-                news: [
-                  {
-                    headline:
-                      "TCS reports better-than-expected quarterly earnings",
-                    source: "Economic Times",
-                    published: "2 hours ago",
-                    sentiment: "Positive",
-                  },
-                  {
-                    headline:
-                      "TCS signs multi-year digital transformation deal",
-                    source: "Business Standard",
-                    published: "5 hours ago",
-                    sentiment: "Positive",
-                  },
-                  {
-                    headline:
-                      "Brokerages raise target price after strong results",
-                    source: "Moneycontrol",
-                    published: "Yesterday",
-                    sentiment: "Positive",
-                  },
-                  {
-                    headline:
-                      "Global IT spending outlook remains stable",
-                    source: "Reuters",
-                    published: "2 days ago",
-                    sentiment: "Neutral",
-                  },
-                ],
-                highlights: [
-                  "Strong quarterly earnings exceeded analyst estimates.",
-                  "Management announced higher dividend payout.",
-                  "Large international deal wins improved revenue outlook.",
-                  "Digital services demand remains resilient.",
-                ],
-                news_summary:
-                  "Recent news flow remains largely positive. Strong earnings, robust deal wins and optimistic management commentary indicate improving business momentum. Overall news sentiment supports a bullish long-term outlook.",
-              }}
-            />
+    <NewsSummary stock={stockData} />
   </div>
 
   
@@ -149,26 +106,7 @@ if (!stockData) {
 
 {/* Full Width Final Verdict */}
 <div className="mt-6">
-  <FinalVerdict
-    stock={{
-      recommendation: "Strong Buy",
-      target_price: 4550,
-      upside_percent: 12.8,
-      confidence: 92,
-      risk_level: "Low",
-      investment_horizon: "Long Term",
-      investment_score: 88,
-      key_reasons: [
-        "Strong earnings growth",
-        "Positive technical momentum",
-        "Healthy balance sheet",
-        "Bullish news sentiment",
-        "Strong institutional ownership",
-      ],
-      final_summary:
-        "Based on technical indicators, financial performance, valuation metrics and recent market sentiment, the stock appears fundamentally strong with favorable long-term growth prospects. Long-term investors may consider gradual accumulation while monitoring valuation levels and macroeconomic risks.",
-    }}
-  />
+  <FinalVerdict stock={stockData} />
   <Disclaimer />
 </div>
       </div>

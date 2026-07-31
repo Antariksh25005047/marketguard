@@ -139,24 +139,26 @@ const getScoreStyle = (score) => {
 };
 
 const FinalVerdict = ({ stock }) => {
+  const verdict = stock?.finalVerdict || {};
+
   const {
     recommendation,
-    target_price,
-    upside_percent,
+    targetPrice,
+    upsidePercent,
     confidence,
-    risk_level,
-    investment_horizon,
-    investment_score,
-    key_reasons,
-    final_summary,
-  } = stock || {};
+    riskLevel,
+    investmentHorizon,
+    investmentScore,
+    keyReasons = [],
+    summary,
+  } = verdict;
 
   const recStyle = getRecommendationStyle(recommendation);
   const RecIcon = recStyle.icon;
-  const reasonsList = formatPointsList(key_reasons, 6);
+  const reasonsList = formatPointsList(keyReasons, 6);
 
-  const scoreStyle = getScoreStyle(investment_score);
-  const scoreValue = Number(investment_score);
+  const scoreStyle = getScoreStyle(investmentScore);
+  const scoreValue = Number(investmentScore);
   const scorePercent = Number.isNaN(scoreValue)
     ? 0
     : Math.max(0, Math.min(100, scoreValue));
@@ -168,7 +170,7 @@ const FinalVerdict = ({ stock }) => {
       label: "Target Price",
       content: (
         <span className="text-sm font-extrabold text-slate-900">
-          {formatCurrency(target_price)}
+          {formatCurrency(targetPrice)}
         </span>
       ),
     },
@@ -177,7 +179,7 @@ const FinalVerdict = ({ stock }) => {
       label: "Expected Upside",
       content: (
         <span className="text-sm font-extrabold text-emerald-600">
-          {formatPercent(upside_percent)}
+          {formatPercent(upsidePercent)}
         </span>
       ),
     },
@@ -198,10 +200,10 @@ const FinalVerdict = ({ stock }) => {
       content: (
         <span
           className={`rounded-full px-2 py-0.5 text-[11px] font-bold ring-1 ring-inset ${getRiskStyle(
-            risk_level
+            riskLevel
           )}`}
         >
-          {formatValue(risk_level)}
+          {formatValue(riskLevel)}
         </span>
       ),
     },
@@ -211,10 +213,10 @@ const FinalVerdict = ({ stock }) => {
       content: (
         <span
           className={`rounded-full px-2 py-0.5 text-[11px] font-bold ring-1 ring-inset ${getHorizonStyle(
-            investment_horizon
+            investmentHorizon
           )}`}
         >
-          {formatValue(investment_horizon)}
+          {formatValue(investmentHorizon)}
         </span>
       ),
     },
@@ -287,7 +289,7 @@ const FinalVerdict = ({ stock }) => {
           </span>
         </div>
         <p className="text-sm leading-relaxed text-slate-600">
-          {final_summary || "N/A"}
+          {summary || "N/A"}
         </p>
       </div>
 

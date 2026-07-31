@@ -63,15 +63,17 @@ const getSentimentStyle = (sentiment) =>
   };
 
 const NewsSummary = ({ stock }) => {
+  const newsData = stock?.newsAnalysis || {};
+
   const {
-    overall_sentiment,
-    sentiment_confidence,
+    overallSentiment,
+    sentimentConfidence,
     news = [],
     highlights = [],
-    news_summary,
-  } = stock || {};
+    summary,
+    } = newsData;
 
-  const overallStyle = getSentimentStyle(overall_sentiment);
+  const overallStyle = getSentimentStyle(overallSentiment);
 
   return (
     <section className="w-full rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -90,7 +92,7 @@ const NewsSummary = ({ stock }) => {
             className={`mt-0.5 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-bold ring-1 ring-inset ${overallStyle.badge}`}
           >
             <span className={`h-1.5 w-1.5 rounded-full ${overallStyle.dot}`} />
-            {formatValue(overall_sentiment)}
+            {formatValue(overallSentiment)}
           </div>
         </div>
         <div className="text-right">
@@ -98,7 +100,7 @@ const NewsSummary = ({ stock }) => {
             Confidence
           </p>
           <p className="text-sm font-extrabold text-slate-900">
-            {formatConfidence(sentiment_confidence)}
+            {formatConfidence(sentimentConfidence)}
           </p>
         </div>
       </div>
@@ -113,7 +115,7 @@ const NewsSummary = ({ stock }) => {
         </div>
         <div className="space-y-1.5">
           {news.length > 0 ? (
-            news.slice(0, 4).map((item, idx) => {
+            news.slice(0, 8).map((item, idx) => {
               const itemStyle = getSentimentStyle(item?.sentiment);
               return (
                 <div
@@ -153,14 +155,14 @@ const NewsSummary = ({ stock }) => {
               Key Highlights
             </span>
           </div>
-          <ul className="space-y-1">
-            {highlights.slice(0, 5).map((point, idx) => (
+          <ul className="space-y-2">
+            {highlights.slice(0, 8).map((point, idx) => (
               <li
                 key={idx}
-                className="flex items-start gap-1.5 text-[11px] font-medium leading-tight text-slate-600"
+                className="flex items-start gap-2 text-[12px] font-medium leading-relaxed text-slate-600"
               >
                 <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-slate-400" />
-                <span className="truncate">{point}</span>
+                <span className="leading-relaxed">{point}</span>
               </li>
             ))}
           </ul>
@@ -176,7 +178,7 @@ const NewsSummary = ({ stock }) => {
           </span>
         </div>
         <p className="text-[11px] leading-relaxed text-slate-600">
-          {news_summary || "N/A"}
+          {summary || "N/A"}
         </p>
       </div>
     </section>
