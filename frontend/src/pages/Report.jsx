@@ -51,8 +51,9 @@ if (!stockData) {
         
         {/* Report Header */}
         <ReportHeader
-          stock={stockData}
-          symbol={symbol}
+        stock={stockData}
+        symbol={symbol}
+        reportData={stockData}
         />
 
         {/* Report Body */}

@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import { generateDocx } from "../../utils/docxGenerator";
 import {
   ShieldCheck,
   CalendarDays,
@@ -18,7 +19,7 @@ import {
  * @param {Object} stock  - { company_name: string, current_price: number|string }
  * @param {string} symbol - Stock ticker symbol, e.g. "TCS"
  */
-const ReportHeader = ({ stock, symbol }) => {
+const ReportHeader = ({ stock, symbol, reportData }) => {
   const companyName = stock?.companyName || "Unknown Company";
   const tickerSymbol = stock?.symbol || symbol || "N/A";
 
@@ -51,6 +52,29 @@ const ReportHeader = ({ stock, symbol }) => {
     const symbolPart = (tickerSymbol || "NA").toString().toUpperCase();
     return `MGAI-${symbolPart}-${yy}${mm}${dd}-001`;
   }, [now, tickerSymbol]);
+
+  const handleShare = async () => {
+  const shareData = {
+    title: "MarketGuard AI Report",
+    text: `AI Stock Analysis Report - ${companyName} (${tickerSymbol})`,
+    url: window.location.href,
+  };
+
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+    } else {
+      await navigator.clipboard.writeText(window.location.href);
+      alert("Report link copied to clipboard!");
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const handleDownloadDocx = () => {
+  generateDocx(reportData);
+};
 
   return (
     <header className="w-full bg-white border border-slate-200 rounded-2xl shadow-sm px-5 py-6 sm:px-8 sm:py-8">
@@ -123,8 +147,9 @@ const ReportHeader = ({ stock, symbol }) => {
       {/* ===================== ACTION BUTTONS ===================== */}
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:flex-wrap sm:justify-end">
         <button
-          type="button"
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md active:translate-y-0"
+        type="button"
+        onClick={handleShare}
+        className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md active:translate-y-0"
         >
           <Share2 className="h-4 w-4" />
           Share Report
@@ -132,6 +157,7 @@ const ReportHeader = ({ stock, symbol }) => {
 
         <button
           type="button"
+          onClick={handleDownloadDocx}
           className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-md active:translate-y-0"
         >
           <FileText className="h-4 w-4" />
