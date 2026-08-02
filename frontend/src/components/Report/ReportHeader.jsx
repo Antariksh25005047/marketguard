@@ -73,6 +73,7 @@ const ReportHeader = ({ stock, symbol, reportData }) => {
 };
 
 const handleDownloadDocx = () => {
+  console.table(reportData);
   generateDocx(reportData);
 };
 
