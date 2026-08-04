@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { generateDocx } from "../../utils/docxGenerator";
+// import { downloadPDF } from "../../utils/pdfGenerator";
 import {
   ShieldCheck,
   CalendarDays,
@@ -19,7 +20,12 @@ import {
  * @param {Object} stock  - { company_name: string, current_price: number|string }
  * @param {string} symbol - Stock ticker symbol, e.g. "TCS"
  */
-const ReportHeader = ({ stock, symbol, reportData }) => {
+const ReportHeader = ({
+  stock,
+  symbol,
+  reportData,
+  onDownloadPDF,
+}) => {
   const companyName = stock?.companyName || "Unknown Company";
   const tickerSymbol = stock?.symbol || symbol || "N/A";
 
@@ -76,6 +82,8 @@ const handleDownloadDocx = () => {
   console.table(reportData);
   generateDocx(reportData);
 };
+
+
 
   return (
     <header className="w-full bg-white border border-slate-200 rounded-2xl shadow-sm px-5 py-6 sm:px-8 sm:py-8">
@@ -167,6 +175,7 @@ const handleDownloadDocx = () => {
 
         <button
           type="button"
+          onClick={onDownloadPDF}
           className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md active:translate-y-0"
         >
           <Download className="h-4 w-4" />

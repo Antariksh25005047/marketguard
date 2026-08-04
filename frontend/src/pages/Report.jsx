@@ -1,3 +1,5 @@
+import { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -17,6 +19,12 @@ const Report = () => {
 const { symbol } = useParams();
 
 const [stockData, setStockData] = useState(null);
+const reportRef = useRef(null);
+
+const handlePrint = useReactToPrint({
+  contentRef: reportRef,
+  documentTitle: `${symbol}-Analysis-Report`,
+});
 
 useEffect(() => {
   const fetchDetails = async () => {
@@ -47,14 +55,41 @@ if (!stockData) {
 
   return (
     <div className="min-h-screen bg-slate-100 py-8">
-      <div className="max-w-7xl mx-auto px-6">
-        
-        {/* Report Header */}
+      <div
+        id="stock-report"
+        ref={reportRef}
+        className="max-w-7xl mx-auto px-6"
+      >
+
         <ReportHeader
-        stock={stockData}
-        symbol={symbol}
-        reportData={stockData}
+            stock={stockData}
+            symbol={symbol}
+            reportData={stockData}
+            onDownloadPDF={handlePrint}
         />
+
+        {/* <div className="flex justify-end mt-4 mb-6">
+            <button
+            onClick={() => generateProfessionalPDF(stockData)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-semibold transition"
+            >
+            Download PDF
+            </button>
+        </div> */}
+
+        {/* <div className="flex justify-end mt-4 mb-6">
+        <button
+            onClick={() =>
+            downloadPDF(
+                "stock-report",
+                `${symbol}-Analysis-Report.pdf`
+            )
+            }
+            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-semibold transition"
+        >
+            Download PDF
+        </button>
+        </div> */}
 
         {/* Report Body */}
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
