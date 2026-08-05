@@ -7,3 +7,38 @@
   --color-emerald: #22c55e;
   --color-mute: #6b7280;
 }
+/* 
+@media print {
+
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+
+  html,
+  body {
+    background: white !important;
+  }
+
+  button {
+    display: none !important;
+  }
+
+  #stock-report {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 16px !important;
+    align-items: start !important;
+  }
+
+  section {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    margin-bottom: 16px !important;
+  }
+} */
