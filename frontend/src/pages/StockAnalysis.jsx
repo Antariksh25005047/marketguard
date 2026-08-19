@@ -46,7 +46,15 @@ export default function StockAnalysis() {
             );
 
             const data = await res.json();
+
             console.log(data);
+
+            await fetch(
+              `http://127.0.0.1:8000/api/search/save?user_email=test@gmail.com&symbol=${data.symbol}&company_name=${encodeURIComponent(data.companyName)}`,
+              {
+                method: "POST",
+              }
+            );
 
             setStockData(data);
         } catch (err) {
