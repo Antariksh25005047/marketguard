@@ -1,4 +1,3 @@
-// import React, { useMemo, useState } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -169,29 +168,40 @@ export default function Watchlist({
   onViewAnalysis,
   onRemoveStock,
   onReadArticle,
+  limit = null,
 }) {
   const navigate = useNavigate();
   const [watchlist, setWatchlist] = useState([]);
   const [query, setQuery] = useState("");
   const [hoveredRow, setHoveredRow] = useState(null);
   useEffect(() => {
+
   async function fetchWatchlist() {
+
     try {
+
+      const user = JSON.parse(localStorage.getItem("user"));
+
       const res = await fetch(
-        "http://127.0.0.1:8000/api/watchlist/1"
+        `http://127.0.0.1:8000/api/watchlist/${encodeURIComponent(user.email)}`
       );
 
       const data = await res.json();
 
-      console.log(data.watchlist);
+      console.log(data);
 
-      setWatchlist(data.watchlist);
+      setWatchlist(data.watchlist || []);
+
     } catch (err) {
+
       console.error(err);
+
     }
+
   }
 
   fetchWatchlist();
+
 }, []);
 
   const filtered = useMemo(() => {
@@ -322,7 +332,7 @@ export default function Watchlist({
               No stocks match &ldquo;{query}&rdquo;.
             </div>
           ) : (
-            filtered.slice(0,4).map((stock, idx) => {
+            (limit ? filtered.slice(0, limit) : filtered).map((stock, idx) => {
               const recommendation = stock.recommendation || "HOLD";
               const rec =
                 RECOMMENDATION_STYLES[recommendation] ||
@@ -484,6 +494,13 @@ export default function Watchlist({
             })
           )}
         </div>
+        <button
+          type="button"
+          onClick={() => navigate("/watchlist")}
+          className="mt-6 w-full rounded-xl border border-white/10 bg-white/[0.03] py-3 text-sm font-semibold text-white/70 transition hover:border-emerald/40 hover:bg-emerald/10 hover:text-emerald"
+        >
+          View Your Watchlist →
+        </button>
       </div>
     </div>
   );

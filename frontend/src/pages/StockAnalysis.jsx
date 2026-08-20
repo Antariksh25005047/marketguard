@@ -49,8 +49,10 @@ export default function StockAnalysis() {
 
             console.log(data);
 
+            const user = JSON.parse(localStorage.getItem("user"));
+
             await fetch(
-              `http://127.0.0.1:8000/api/search/save?user_email=test@gmail.com&symbol=${data.symbol}&company_name=${encodeURIComponent(data.companyName)}`,
+              `http://127.0.0.1:8000/api/search/save?user_email=${encodeURIComponent(user.email)}&symbol=${data.symbol}&company_name=${encodeURIComponent(data.companyName)}`,
               {
                 method: "POST",
               }
@@ -65,15 +67,17 @@ export default function StockAnalysis() {
     fetchStock();
 }, [symbol]);
 const addToWatchlist = async () => {
+
   try {
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
     const res = await fetch(
-      `http://127.0.0.1:8000/api/watchlist/add?user_id=1&symbol=${symbol}`,
+      `http://127.0.0.1:8000/api/watchlist/add?user_email=${encodeURIComponent(user.email)}&symbol=${symbol}`,
       {
         method: "POST",
       }
     );
-
-    
 
     const data = await res.json();
 
@@ -82,8 +86,11 @@ const addToWatchlist = async () => {
     navigate("/dashboard");
 
   } catch (err) {
+
     console.error(err);
+
   }
+
 };
 
 const generateReport = () => {

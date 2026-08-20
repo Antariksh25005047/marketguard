@@ -43,7 +43,7 @@ function App() {
         <Route path="/stock-analysis/:symbol" element={<StockAnalysis />} />
         <Route path="/profile" element={<ProfilePage/>} />
         <Route path="/report/:symbol" element={<Report />} />
-        {/* <Route path="/watchlist" element={<Watchlist />} /> */}
+        {/* <Route path="/watchlist" element={<WatchlistPage />} /> */}
       </Routes>
     </BrowserRouter>
   );

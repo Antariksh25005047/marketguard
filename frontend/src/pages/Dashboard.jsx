@@ -69,7 +69,7 @@ export default function Dashboard() {
         </div>
 
         <div className="mt-8">
-          <Watchlist />
+          <Watchlist limit={4} />
         </div>
       </main>
     </div>
