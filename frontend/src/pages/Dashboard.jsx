@@ -1,4 +1,4 @@
-// import TopBar from "../components/Dashboard/TopBar";
+// import TopBar from "../components/Dashboard/Topbar";
 // import HeroSearch from "../components/Dashboard/HeroSearch";
 // // import StatsCards from "../components/Dashboard/StatsCard";
 // // import ChartSection from "../components/Dashboard/ChartSection";
@@ -43,7 +43,7 @@
 // }
 
 
-import TopBar from "../components/Dashboard/TopBar";
+import TopBar from "../components/Dashboard/Topbar";
 import HeroSearch from "../components/Dashboard/HeroSearch";
 import MarketMovers from "../components/Dashboard/MarketMovers";
 import RecentSearches from "../components/Dashboard/RecentSearch";
