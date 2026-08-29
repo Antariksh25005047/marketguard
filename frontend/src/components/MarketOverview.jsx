@@ -100,7 +100,7 @@ useEffect(() => {
   async function fetchMarketOverview() {
     try {
       const res = await fetch(
-        "http://127.0.0.1:8000/api/stocks/market-overview"
+        "https://marketguard-production.up.railway.app/api/stocks/market-overview"
       );
 
       const data = await res.json();

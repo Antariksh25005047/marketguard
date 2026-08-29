@@ -14,7 +14,7 @@ const MarketMovers = () => {
       try {
         setLoading(true);
         setError(false);
-        const response = await fetch("http://127.0.0.1:8000/api/stocks/movers");
+        const response = await fetch("https://marketguard-production.up.railway.app/api/stocks/movers");
         if (!response.ok) {
           throw new Error("Failed to fetch market movers");
         }

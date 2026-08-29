@@ -77,7 +77,7 @@ export default function HeroSearch() {
   const timer = setTimeout(async () => {
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/api/search?q=${query}`
+        `https://marketguard-production.up.railway.app/api/search?q=${query}`
       );
 
       const data = await res.json();

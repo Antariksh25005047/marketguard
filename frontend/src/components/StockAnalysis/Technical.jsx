@@ -223,7 +223,7 @@ export default function TechnicalIndicators() {
 
   useEffect(() => {
 
-    fetch(`http://127.0.0.1:8000/api/stocks/${symbol}/technical`)
+    fetch(`https://marketguard-production.up.railway.app/api/stocks/${symbol}/technical`)
       .then(res => res.json())
       .then(data => {
 

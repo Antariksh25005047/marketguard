@@ -481,7 +481,7 @@ export default function MarketGuardSignup() {
   }
 
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/auth/signup", {
+    const response = await fetch("https://marketguard-production.up.railway.app/api/auth/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

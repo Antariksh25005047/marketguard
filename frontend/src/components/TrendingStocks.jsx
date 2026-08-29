@@ -155,7 +155,7 @@ export default function TrendingStocks() {
     async function fetchMovers() {
       try {
         const res = await fetch(
-          "http://127.0.0.1:8000/api/stocks/movers"
+          "https://marketguard-production.up.railway.app/api/stocks/movers"
         );
 
         const data = await res.json();

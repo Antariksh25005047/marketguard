@@ -319,7 +319,7 @@ export default function AIStockComparison({
 
     try {
         const res = await fetch(
-            `http://127.0.0.1:8000/api/stocks/${val}/details`
+            `https://marketguard-production.up.railway.app/api/stocks/${val}/details`
         );
 
         if (!res.ok) {
@@ -388,7 +388,7 @@ export default function AIStockComparison({
     console.log("3. Getting comparison");
 
     const res = await fetch(
-  `http://127.0.0.1:8000/api/stocks/compare?stock1=${currentStock.symbol}&stock2=${selected.ticker}`
+  `https://marketguard-production.up.railway.app/api/stocks/compare?stock1=${currentStock.symbol}&stock2=${selected.ticker}`
 );
 
 if (!res.ok) {

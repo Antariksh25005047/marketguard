@@ -30,7 +30,7 @@ useEffect(() => {
   const fetchDetails = async () => {
     try {
       const res = await axios.get(
-        `http://127.0.0.1:8000/api/stocks/${symbol}/details`
+        `https://marketguard-production.up.railway.app/api/stocks/${symbol}/details`
       );
 
       console.log(res.data);

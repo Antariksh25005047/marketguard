@@ -42,7 +42,7 @@ export default function StockAnalysis() {
     async function fetchStock() {
         try {
             const res = await fetch(
-                `http://127.0.0.1:8000/api/stocks/${symbol}/details`
+                `https://marketguard-production.up.railway.app/api/stocks/${symbol}/details`
             );
 
             const data = await res.json();
@@ -52,7 +52,7 @@ export default function StockAnalysis() {
             const user = JSON.parse(localStorage.getItem("user"));
 
             await fetch(
-              `http://127.0.0.1:8000/api/search/save?user_email=${encodeURIComponent(user.email)}&symbol=${data.symbol}&company_name=${encodeURIComponent(data.companyName)}`,
+              `https://marketguard-production.up.railway.app/api/search/save?user_email=${encodeURIComponent(user.email)}&symbol=${data.symbol}&company_name=${encodeURIComponent(data.companyName)}`,
               {
                 method: "POST",
               }
@@ -73,7 +73,7 @@ const addToWatchlist = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
 
     const res = await fetch(
-      `http://127.0.0.1:8000/api/watchlist/add?user_email=${encodeURIComponent(user.email)}&symbol=${symbol}`,
+      `https://marketguard-production.up.railway.app/api/watchlist/add?user_email=${encodeURIComponent(user.email)}&symbol=${symbol}`,
       {
         method: "POST",
       }

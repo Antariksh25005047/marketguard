@@ -107,7 +107,7 @@ export default function RecentSearches() {
       try {
 
         const res = await fetch(
-          "http://127.0.0.1:8000/api/search/recent?user_email=test@gmail.com"
+          "https://marketguard-production.up.railway.app/api/search/recent?user_email=test@gmail.com"
         );
 
         const data = await res.json();

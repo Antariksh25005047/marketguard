@@ -197,7 +197,7 @@ const [isTransitioning, setIsTransitioning] = useState(false);
 const period = PERIOD_MAP[activeTimeframe];
 
 const res = await fetch(
-  `http://127.0.0.1:8000/api/stocks/${symbol}/history?period=${period}`);
+  `https://marketguard-production.up.railway.app/api/stocks/${symbol}/history?period=${period}`);
 
 
 

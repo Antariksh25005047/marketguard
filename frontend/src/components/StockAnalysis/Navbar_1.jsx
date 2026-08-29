@@ -311,7 +311,7 @@ export default function Navbar() {
         console.log("Current Symbol:", currentSymbol);
 
       await fetch(
-        `http://127.0.0.1:8000/api/watchlist/add?user_id=1&symbol=${currentSymbol}`,
+        `https://marketguard-production.up.railway.app/api/watchlist/add?user_id=1&symbol=${currentSymbol}`,
         {
           method: "POST",
         }
