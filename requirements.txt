@@ -15,5 +15,6 @@ requests
 beautifulsoup4
 feedparser
 textblob
+apscheduler
 # Utilities
 pydantic
