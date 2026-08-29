@@ -7,19 +7,39 @@ export const downloadPDF = async (elementId, fileName) => {
   if (!input) return;
 
   const canvas = await html2canvas(input, {
-    scale: 2,
+    scale: 3,
     useCORS: true,
+    allowTaint: true,
+    backgroundColor: "#ffffff",
+    scrollY: -window.scrollY,
   });
 
-  const imgData = canvas.toDataURL("image/png");
+  const imgData = canvas.toDataURL("image/png", 1.0);
 
   const pdf = new jsPDF("p", "mm", "a4");
 
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const imgWidth = pageWidth;
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = pdf.internal.pageSize.getHeight();
+
+  const imgWidth = pdfWidth;
   const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-  pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+  let heightLeft = imgHeight;
+  let position = 0;
+
+  pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+
+  heightLeft -= pdfHeight;
+
+  while (heightLeft > 0) {
+    position = heightLeft - imgHeight;
+
+    pdf.addPage();
+
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+
+    heightLeft -= pdfHeight;
+  }
 
   pdf.save(fileName);
 };

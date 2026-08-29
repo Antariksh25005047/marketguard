@@ -106,8 +106,10 @@ export default function RecentSearches() {
 
       try {
 
+        const user = JSON.parse(localStorage.getItem("user"));
+
         const res = await fetch(
-          "https://marketguard-production.up.railway.app/api/search/recent?user_email=test@gmail.com"
+        `https://marketguard-production.up.railway.app/api/search/recent?user_email=${encodeURIComponent(user.email)}`
         );
 
         const data = await res.json();
