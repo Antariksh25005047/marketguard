@@ -21,17 +21,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import Navbar_1 from "../components/stockAnalysis/Navbar_1";
-import StockHeader from "../components/stockAnalysis/StockHeader";
-import StockChart from "../components/stockAnalysis/StockChart";
-import PeekAndDip from "../components/stockAnalysis/PeekAndDip"
-import AiAnalysisCard from "../components/stockAnalysis/AiAnalysisCard";
+import Navbar_1 from "../components/StockAnalysis/Navbar_1";
+import StockHeader from "../components/StockAnalysis/StockHeader";
+import StockChart from "../components/StockAnalysis/StockChart";
+import PeekAndDip from "../components/StockAnalysis/PeekAndDip"
+import AiAnalysisCard from "../components/StockAnalysis/AiAnalysisCard";
 import AiPrediction from "../components/StockAnalysis/AiPrediction";
-import Technical from "../components/stockAnalysis/Technical";
-import FinancialMetrics from "../components/stockAnalysis/MetricsIndicator";
+import Technical from "../components/StockAnalysis/Technical";
+import FinancialMetrics from "../components/StockAnalysis/MetricsIndicator";
 // import SimilarStocks from "../components/StockAnalysis/SimilarStocks";
-import StockNews from "../components/stockAnalysis/StockNews";
-import News from "../components/stockAnalysis/News";
+import StockNews from "../components/StockAnalysis/StockNews";
+import News from "../components/StockAnalysis/News";
 
 export default function StockAnalysis() {
   const { symbol } = useParams();

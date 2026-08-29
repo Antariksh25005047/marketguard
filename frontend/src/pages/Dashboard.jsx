@@ -1,7 +1,7 @@
-// import TopBar from "../components/dashboard/TopBar";
-// import HeroSearch from "../components/dashboard/HeroSearch";
-// // import StatsCards from "../components/dashboard/StatsCard";
-// // import ChartSection from "../components/dashboard/ChartSection";
+// import TopBar from "../components/Dashboard/TopBar";
+// import HeroSearch from "../components/Dashboard/HeroSearch";
+// // import StatsCards from "../components/Dashboard/StatsCard";
+// // import ChartSection from "../components/Dashboard/ChartSection";
 // import RecentSearches from "../components/Dashboard/RecentSearch";
 // import NewsCard from "../components/Dashboard/News";
 // import Watchlist from "../components/Dashboard/WatchList";
@@ -43,8 +43,8 @@
 // }
 
 
-import TopBar from "../components/dashboard/TopBar";
-import HeroSearch from "../components/dashboard/HeroSearch";
+import TopBar from "../components/Dashboard/TopBar";
+import HeroSearch from "../components/Dashboard/HeroSearch";
 import MarketMovers from "../components/Dashboard/MarketMovers";
 import RecentSearches from "../components/Dashboard/RecentSearch";
 import MarketNews from "../components/Dashboard/News";
