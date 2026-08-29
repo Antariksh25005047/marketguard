@@ -1,7 +1,7 @@
 from fastapi import APIRouter , HTTPException
 from datetime import datetime, timezone
 from backend.core.models import get_session, NewsArticle
-from ml_and_db.scrapers.news_scrapers import fetch_rss_news
+from ml_and_db.scrapers.news_scraper import fetch_rss_news
 from ml_and_db.scrapers.social_scraper import fetch_all_stock_news
 
 
